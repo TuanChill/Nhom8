@@ -1,4 +1,6 @@
+import 'package:daily_e/src/presentation/layout_app.dart';
 import 'package:daily_e/src/presentation/on_boarding_sreen.dart';
+import 'package:daily_e/themes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,12 +14,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const OnBoardingScreen(),
+      title: 'Daily E',
+      theme: lightMode,
+      darkTheme: darkMode,
+      home: const LayoutApp(),
     );
   }
 }
