@@ -6,4 +6,7 @@ class AppColor {
   static Color kOnBoardingColor = const Color(0XFFFEFEFE);
   static Color kGrayscale40 = const Color(0XFFAEAEB2);
   static Color kGrayscaleDark100 = const Color(0XFF1C1C1E);
+  static Color kBackground = const Color(0XFFFAFAFA);
+  static Color kLine = const Color(0XFFEBEBEB);
+  static Color kBackground2 = const Color(0XFFF6F6F6);
 }
