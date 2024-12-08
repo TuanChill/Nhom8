@@ -8,10 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
-  TextEditingController firstName = TextEditingController();
-  TextEditingController listName = TextEditingController();
-  TextEditingController emailC = TextEditingController();
-  TextEditingController passwordC = TextEditingController();
+  final TextEditingController firstName = TextEditingController();
+  final TextEditingController listName = TextEditingController();
+  final TextEditingController emailC = TextEditingController();
+  final TextEditingController passwordC = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

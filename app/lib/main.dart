@@ -1,5 +1,4 @@
 import 'package:daily_e/src/presentation/layout_app.dart';
-import 'package:daily_e/src/presentation/on_boarding_sreen.dart';
 import 'package:daily_e/themes.dart';
 import 'package:flutter/material.dart';
 

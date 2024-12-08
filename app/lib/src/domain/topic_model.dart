@@ -1,16 +1,19 @@
+import 'package:daily_e/src/domain/media.dart';
+
 class Topic {
-  final String id;
+  final int id;
   final String documentId;
   final String name;
   final String level;
-  final String thumbnail;
+  final Media thumbnail;
 
-  Topic(
-      {required this.id,
-      required this.documentId,
-      required this.name,
-      required this.level,
-      required this.thumbnail});
+  Topic({
+    required this.id,
+    required this.documentId,
+    required this.name,
+    required this.level,
+    required this.thumbnail,
+  });
 
   factory Topic.fromJson(Map<String, dynamic> json) {
     return Topic(
@@ -18,7 +21,7 @@ class Topic {
       documentId: json['documentId'],
       name: json['name'],
       level: json['level'],
-      thumbnail: json['thumbnail'],
+      thumbnail: Media.fromMap(json['thumbnail']),
     );
   }
 
@@ -28,7 +31,7 @@ class Topic {
       'documentId': documentId,
       'name': name,
       'level': level,
-      'thumbnail': thumbnail,
+      'thumbnail': thumbnail.toMap(),
     };
   }
 }

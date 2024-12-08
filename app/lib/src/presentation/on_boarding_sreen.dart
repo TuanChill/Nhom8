@@ -39,7 +39,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: onBoardinglist.length,
                 physics: const BouncingScrollPhysics(),
-                controller: _pageController1 ?? _pageController2,
+                controller: _pageController1,
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
@@ -74,7 +74,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: onBoardinglist.length,
                 physics: const BouncingScrollPhysics(),
-                controller: _pageController2 ?? _pageController1,
+                controller: _pageController2,
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
@@ -219,8 +219,8 @@ class _PrimaryButtonState extends State<PrimaryButton>
 }
 
 class OnBoardingCard extends StatefulWidget {
-  OnBoarding onBoardingModel;
-  OnBoardingCard({
+  final OnBoarding onBoardingModel;
+  const OnBoardingCard({
     super.key,
     required this.onBoardingModel,
   });

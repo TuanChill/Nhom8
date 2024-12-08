@@ -10,8 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 class SignInScreen extends StatelessWidget {
   final Future<void> Function() onLoginSuccess;
   SignInScreen({super.key, required this.onLoginSuccess});
-  TextEditingController emailC = TextEditingController();
-  TextEditingController passwordC = TextEditingController();
+  final TextEditingController emailC = TextEditingController();
+  final TextEditingController passwordC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   // handle login

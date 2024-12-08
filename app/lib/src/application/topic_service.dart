@@ -1,15 +1,29 @@
 import 'package:daily_e/constant.dart';
+import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/domain/topic_model.dart';
 import 'package:http/http.dart';
+import 'dart:convert';
 
 class TopicService {
-  // Future<Map<String, Topic>> getTopics() async {
-  //   Response response = await get(Uri.parse(API_URL.topics));
+  Future<List<Topic>> getTopics() async {
+    String? token = await SecureStorage().getToken();
+    Response response =
+        await get(Uri.parse('${API_URL.topics}?populate=*'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': token ?? '',
+    });
 
-  //   if (response.statusCode == 200) {
-  //     return Topic.fromJson(response.body);
-  //   } else {
-  //     throw Exception(response.reasonPhrase);
-  //   }
-  // }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final List<dynamic> topicsJson = data['data'];
+
+      // Deserialize the list of topics
+      List<Topic> topics =
+          topicsJson.map((json) => Topic.fromJson(json)).toList();
+      return topics;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
 }

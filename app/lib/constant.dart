@@ -7,6 +7,7 @@ class ImagesPath {
 
 class API_URL {
   static String baseUrl = 'http://10.0.2.2:1337/api';
+  static String urlHost = 'http://10.0.2.2:1337';
   static String login = '$baseUrl/auth/local';
   static String register = '$baseUrl/auth/local/register';
   static String topics = '$baseUrl/topics';
