@@ -392,7 +392,6 @@ export interface ApiChallengeChallenge extends Struct.CollectionTypeSchema {
       'api::challenge.challenge'
     > &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     source: Schema.Attribute.Media<'audios' | 'videos'>;
     updatedAt: Schema.Attribute.DateTime;

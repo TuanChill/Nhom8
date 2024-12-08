@@ -1,6 +1,7 @@
 import 'package:daily_e/constant.dart';
 import 'package:daily_e/src/application/topic_service.dart';
 import 'package:daily_e/src/domain/topic_model.dart';
+import 'package:daily_e/src/presentation/lessons_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,8 +23,6 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchTopics() async {
     List<Topic> fetchedTopics = await TopicService().getTopics();
 
-    print(fetchedTopics);
-
     setState(() {
       topics.addAll(fetchedTopics);
     });
@@ -37,7 +36,7 @@ class _HomePageState extends State<HomePage> {
           'Topics',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.teal[700],
         elevation: 0,
       ),
       body: ListView.builder(
@@ -70,10 +69,18 @@ class _HomePageState extends State<HomePage> {
                 topics[index].name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(topics[index].level),
+              subtitle: Text(
+                  '${topics[index].lessons.length} Lessons - Level: ${topics[index].level}'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                // Handle onTap if needed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LessonListPage(
+                      topicId: topics[index].documentId,
+                    ),
+                  ),
+                );
               },
             ),
           );
