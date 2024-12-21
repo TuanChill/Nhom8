@@ -24,7 +24,14 @@ class Topic {
       documentId: json['documentId'],
       name: json['name'],
       level: json['level'],
-      thumbnail: Media.fromMap(json['thumbnail']),
+      thumbnail: json['thumbnail'] != null
+          ? Media.fromMap(json['thumbnail'])
+          : Media(
+              id: 0,
+              documentId: '',
+              name: '',
+              url: '',
+            ),
       lessons: (json['lessions'] as List)
           .map((lesson) => Lesson.fromJson(lesson))
           .toList(),

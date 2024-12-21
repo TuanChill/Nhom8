@@ -1,17 +1,14 @@
 import 'package:daily_e/constant.dart';
-import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/domain/topic_model.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 
 class TopicService {
   Future<List<Topic>> getTopics() async {
-    String? token = await SecureStorage().getToken();
     Response response =
         await get(Uri.parse('${API_URL.topics}?populate=*'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': token ?? '',
     });
 
     if (response.statusCode == 200) {
