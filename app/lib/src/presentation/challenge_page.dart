@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:daily_e/src/application/challenge_service.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChallengePage extends StatefulWidget {
   final String lessonId;
@@ -12,7 +15,11 @@ class ChallengePage extends StatefulWidget {
   State<ChallengePage> createState() => _ChallengePageState();
 }
 
-class _ChallengePageState extends State<ChallengePage> {
+class _ChallengePageState extends State<ChallengePage>
+    with WidgetsBindingObserver {
+  int activeTimeInSeconds = 0; // Thời gian hoạt động tính bằng giây
+  Timer? _timer;
+
   final TextEditingController _inputController = TextEditingController();
   String hintMessage = "";
   String hintAnswer = "";
@@ -30,6 +37,9 @@ class _ChallengePageState extends State<ChallengePage> {
   void initState() {
     super.initState();
     _loadChallenge();
+    WidgetsBinding.instance.addObserver(this);
+    _loadActiveTime();
+    _startTimer();
   }
 
   Future<void> _setupAudioPlayer() async {
@@ -173,6 +183,9 @@ class _ChallengePageState extends State<ChallengePage> {
   void dispose() {
     _audioPlayer?.dispose();
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _saveActiveTime();
+    _timer?.cancel();
   }
 
   Future<void> _togglePlayPause() async {
@@ -224,6 +237,39 @@ class _ChallengePageState extends State<ChallengePage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      _saveActiveTime(); // Lưu thời gian khi ứng dụng bị tạm dừng hoặc đóng
+    }
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        activeTimeInSeconds++;
+      });
+    });
+  }
+
+  void _loadActiveTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      activeTimeInSeconds = prefs.getInt('activeTime') ?? 0;
+    });
+  }
+
+  void _saveActiveTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('activeTime', activeTimeInSeconds);
+  }
+
+  String _formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    return "$minutes minutes";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -233,6 +279,15 @@ class _ChallengePageState extends State<ChallengePage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Text(
+                "Active time today: ${_formatTime(activeTimeInSeconds)}",
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                ),
+              ),
+            ),
             Text(
               currentChallenge != null && currentChallenge!.lesson.name != null
                   ? "${currentChallenge!.lesson.id}. ${currentChallenge!.lesson.name}"
