@@ -1,8 +1,10 @@
 import 'package:daily_e/src/application/challenge_service.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
+import 'package:daily_e/src/presentation/setting_page.dart';
+import 'package:daily_e/src/presentation/note_page.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-
+import 'auth/setting_page.dart';
 class ChallengePage extends StatefulWidget {
   final String lessonId;
 
@@ -71,26 +73,30 @@ class _ChallengePageState extends State<ChallengePage> {
   void _showTopSnackBar(String message, Color backgroundColor) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).padding.top + 10,
-        left: 16,
-        right: 16,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              textAlign: TextAlign.center,
+      builder: (context) =>
+          Positioned(
+            top: MediaQuery
+                .of(context)
+                .padding
+                .top + 10,
+            left: 16,
+            right: 16,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  message,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
     );
 
     overlay?.insert(overlayEntry);
@@ -235,13 +241,57 @@ class _ChallengePageState extends State<ChallengePage> {
           children: [
             Text(
               currentChallenge != null && currentChallenge!.lesson.name != null
-                  ? "${currentChallenge!.lesson.id}. ${currentChallenge!.lesson.name}"
+                  ? "${currentChallenge!.lesson.id}. ${currentChallenge!.lesson
+                  .name}"
                   : "",
               style: const TextStyle(fontSize: 20, color: Colors.black),
             ),
           ],
         ),
         actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_horiz, color: Colors.grey[700]),
+            offset: Offset(0, 40), // Đẩy menu xuống dưới icon
+            onSelected: (value) {
+              // note, setting, reset
+              if (value == 'View notes') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NotePage()), // Navigate to NotePage
+                );
+              } else if (value == 'Settings') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (
+                      context) =>  SettingsScreen()), // Navigate to SettingsScreen
+                );
+              }
+              else if (value == 'Reset lesson') {
+                // Reset lesson to the first page
+                setState(() {
+                  currentPage = 1; // Set currentPage to 1 (first page)
+                  isPlaying = false; // Optional: Reset play status
+                });
+                 _loadChallenge(); // Reload the challenge for the first page
+                // _showTopSnackBar('Lesson reset to the first page! 🔄', Colors.blue);
+              }
+            },
+            itemBuilder: (BuildContext context) =>
+            <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'View notes',
+                child: Text('View notes'),
+              ),
+              PopupMenuItem<String>(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem<String>(
+                value: 'Reset lesson',
+                child: Text('Reset lesson'),
+              ),
+            ],
+          ),
           IconButton(
             icon: Icon(Icons.close, color: Colors.grey[700]),
             onPressed: () {
@@ -253,182 +303,183 @@ class _ChallengePageState extends State<ChallengePage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          isPlaying
-                              ? Icons.pause_circle_filled
-                              : Icons.play_circle_filled,
-                          color: Colors.teal,
-                          size: 40,
-                        ),
-                        onPressed: _togglePlayPause,
-                      ),
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton<double>(
-                          value: selectedSpeed,
-                          items: [0.5, 1.0, 1.5, 2.0]
-                              .map((speed) => DropdownMenuItem(
-                                    value: speed,
-                                    child: Text('${speed}x'),
-                                  ))
-                              .toList(),
-                          onChanged: (speed) {
-                            if (speed != null) {
-                              _changePlaybackSpeed(speed);
-                            }
-                          },
-                          style: const TextStyle(
+        padding:
+        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    isPlaying
+                        ? Icons.pause_circle_filled
+                        : Icons.play_circle_filled,
+                    color: Colors.teal,
+                    size: 40,
+                  ),
+                  onPressed: _togglePlayPause,
+                ),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<double>(
+                    value: selectedSpeed,
+                    items: [0.5, 1.0, 1.5, 2.0]
+                        .map((speed) =>
+                        DropdownMenuItem(
+                          value: speed,
+                          child: Text('${speed}x'),
+                        ))
+                        .toList(),
+                    onChanged: (speed) {
+                      if (speed != null) {
+                        _changePlaybackSpeed(speed);
+                      }
+                    },
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    dropdownColor: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: _goToPreviousPage,
+                      icon: const Icon(Icons.arrow_back_ios, size: 20),
+                    ),
+                    Text(
+                      "$currentPage / $totalPages",
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.grey[700]),
+                    ),
+                    IconButton(
+                      onPressed: _goToNextPage,
+                      icon: const Icon(Icons.arrow_forward_ios, size: 20),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            // TextField(
+            //   controller: _inputController, // Liên kết controller
+            //   style: const TextStyle(color: Colors.black),
+            //   decoration: InputDecoration(
+            //     hintText: 'Type what you hear...',
+            //     hintStyle: const TextStyle(color: Colors.grey),
+            //     filled: true,
+            //     fillColor: Colors.grey[200],
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(8),
+            //       borderSide: BorderSide.none,
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 10),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: _inputController,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    hintText: 'Type what you hear...',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                if (hintMessage.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      hintMessage,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ),
+                if (hintAnswer.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Answer:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
-                          dropdownColor: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: _goToPreviousPage,
-                            icon: const Icon(Icons.arrow_back_ios, size: 20),
-                          ),
-                          Text(
-                            "$currentPage / $totalPages",
-                            style: TextStyle(
-                                fontSize: 16, color: Colors.grey[700]),
-                          ),
-                          IconButton(
-                            onPressed: _goToNextPage,
-                            icon: const Icon(Icons.arrow_forward_ios, size: 20),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // TextField(
-                  //   controller: _inputController, // Liên kết controller
-                  //   style: const TextStyle(color: Colors.black),
-                  //   decoration: InputDecoration(
-                  //     hintText: 'Type what you hear...',
-                  //     hintStyle: const TextStyle(color: Colors.grey),
-                  //     filled: true,
-                  //     fillColor: Colors.grey[200],
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //       borderSide: BorderSide.none,
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        controller: _inputController,
-                        style: const TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          hintText: 'Type what you hear...',
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                      if (hintMessage.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            hintMessage,
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ),
-                      if (hintAnswer.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Answer:',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
+                        const SizedBox(height: 5),
+                        Wrap(
+                          spacing: 8,
+                          children: hintAnswer.split(' ').map((word) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                              const SizedBox(height: 5),
-                              Wrap(
-                                spacing: 8,
-                                children: hintAnswer.split(' ').map((word) {
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Text(
-                                      word,
-                                      style: const TextStyle(
-                                          fontSize: 16, color: Colors.black),
-                                    ),
-                                  );
-                                }).toList(),
+                              child: Text(
+                                word,
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.black),
                               ),
-                            ],
-                          ),
+                            );
+                          }).toList(),
                         ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: _revealAnswer,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[400],
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 30),
-                        ),
-                        child: Text(hintAnswer.isEmpty ? 'Skip' : 'Redo',
-                            style: const TextStyle(color: Colors.white)),
-                      ),
-                      ElevatedButton(
-                        onPressed: _togglePlayPause,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 30),
-                        ),
-                        child: Text(isPlaying ? 'Pause' : 'Play Again',
-                            style: const TextStyle(color: Colors.white)),
-                      ),
-                      ElevatedButton(
-                        onPressed: _checkAnswer,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 30),
-                        ),
-                        child: Text(hintAnswer.isNotEmpty ? 'Next' : 'Check',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _revealAnswer,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[400],
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 30),
+                  ),
+                  child: Text(hintAnswer.isEmpty ? 'Skip' : 'Redo',
+                      style: const TextStyle(color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: _togglePlayPause,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 30),
+                  ),
+                  child: Text(isPlaying ? 'Pause' : 'Play Again',
+                      style: const TextStyle(color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: _checkAnswer,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 30),
+                  ),
+                  child: Text(hintAnswer.isNotEmpty ? 'Next' : 'Check',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
