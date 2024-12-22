@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:daily_e/src/application/challenge_service.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
+import 'package:daily_e/src/presentation/setting_page.dart';
+import 'package:daily_e/src/presentation/note_page.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'auth/setting_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChallengePage extends StatefulWidget {
@@ -297,6 +300,49 @@ class _ChallengePageState extends State<ChallengePage>
           ],
         ),
         actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_horiz, color: Colors.grey[700]),
+            offset: Offset(0, 40), // Đẩy menu xuống dưới icon
+            onSelected: (value) {
+              // note, setting, reset
+              if (value == 'View notes') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NotePage()), // Navigate to NotePage
+                );
+              } else if (value == 'Settings') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SettingsScreen()), // Navigate to SettingsScreen
+                );
+              } else if (value == 'Reset lesson') {
+                // Reset lesson to the first page
+                setState(() {
+                  currentPage = 1; // Set currentPage to 1 (first page)
+                  isPlaying = false; // Optional: Reset play status
+                });
+                _loadChallenge(); // Reload the challenge for the first page
+                // _showTopSnackBar('Lesson reset to the first page! 🔄', Colors.blue);
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'View notes',
+                child: Text('View notes'),
+              ),
+              PopupMenuItem<String>(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem<String>(
+                value: 'Reset lesson',
+                child: Text('Reset lesson'),
+              ),
+            ],
+          ),
           IconButton(
             icon: Icon(Icons.close, color: Colors.grey[700]),
             onPressed: () {

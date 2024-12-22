@@ -1,101 +1,180 @@
+// settings_screen.dart
 import 'package:flutter/material.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  String _selectedLanguage = 'English'; // Default language
+  String _selectedFont = 'Roboto'; // Default font
+  bool _isDarkMode = true; // Default theme mode
+  String _selectedBackground = 'Background 1'; // Default background
+  double _fontSize = 16.0; // Default font size
+
+  final List<String> backgrounds = [
+    'Background 1',
+    'Background 2',
+    'Background 3',
+    'Background 4',
+    'Background 5'
+  ]; // Background options
+
+  final Map<String, String> backgroundImages = {
+    'Background 1': 'https://i.pinimg.com/736x/3e/e4/78/3ee478a682a5d79c0b13625d48d01e8a.jpg',
+    'Background 2': 'https://i.pinimg.com/736x/05/8e/e6/058ee63186f443b7e22f30bd2bffcff4.jpg',
+    'Background 3': 'https://i.pinimg.com/736x/db/d5/3f/dbd53f9a10b026f6b0b9a98aa45d7648.jpg',
+    'Background 4': 'https://i.pinimg.com/736x/6f/4d/c8/6f4dc834172150390ff415466596e908.jpg',
+    'Background 5': 'https://i.pinimg.com/736x/0d/77/db/0d77db3a3b2bcfa025d66dfc34220e53.jpg',
+  }; // Map of background options to image URLs
+
+  // Define the font families here
+  final Map<String, TextStyle> fontStyles = {
+    'Roboto': TextStyle(fontFamily: 'Roboto'),
+    'Arial': TextStyle(fontFamily: 'Arial'),
+    'Times New Roman': TextStyle(fontFamily: 'Times New Roman'),
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        title: Text('3. My flower garden', style: TextStyle(color: Colors.white)),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_horiz, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
+        title: Text('Settings'),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Audio Controls
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.pause, color: Colors.blue, size: 40),
-                SizedBox(width: 10),
-                Text('1x', style: TextStyle(color: Colors.white, fontSize: 20)),
-                Spacer(),
-                Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
-                Text('1 / 19', style: TextStyle(color: Colors.white)),
-                Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-              ],
+          // Background image as the base layer
+          Positioned.fill(
+            child: Image.network(
+              backgroundImages[_selectedBackground]! ?? '',
+              fit: BoxFit.cover,
             ),
           ),
-          // Input Field
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              children: [
-                TextField(
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'Type what you hear...',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white12,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+          // Content of the screen on top of the background
+          ListView(
+            children: [
+              // Language setting
+              ListTile(
+                title: Text(
+                  'Language',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
                 ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(Icons.lightbulb, color: Colors.grey, size: 20),
-                    SizedBox(width: 5),
-                    Text('Hint: Anne', style: TextStyle(color: Colors.grey)),
-                  ],
-                )
-              ],
-            ),
-          ),
-          Spacer(),
-          // Bottom Buttons
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[800],
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                  ),
-                  child: Text('Skip', style: TextStyle(color: Colors.white)),
+                subtitle: Text(
+                  _selectedLanguage,
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                  ),
-                  child: Text('Listen again', style: TextStyle(color: Colors.white)),
+                trailing: DropdownButton<String>(
+                  value: _selectedLanguage,
+                  items: ['English', 'Tiếng Việt']
+                      .map((lang) => DropdownMenuItem(
+                    value: lang,
+                    child: Text(lang),
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedLanguage = value!;
+                    });
+                  },
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                  ),
-                  child: Text('Check', style: TextStyle(color: Colors.white)),
+              ),
+              Divider(),
+
+              // Font setting
+              ListTile(
+                title: Text(
+                  'Font',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
                 ),
-              ],
-            ),
+                subtitle: Text(
+                  _selectedFont,
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                trailing: DropdownButton<String>(
+                  value: _selectedFont,
+                  items: ['Roboto', 'Arial', 'Times New Roman']
+                      .map((font) => DropdownMenuItem(
+                    value: font,
+                    child: Text(font),
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedFont = value!;
+                    });
+                  },
+                ),
+              ),
+              Divider(),
+
+              // Font size setting (moved here, below Font and above Change Theme)
+              ListTile(
+                title: Text(
+                  'Font Size',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Slider(
+                  value: _fontSize,
+                  min: 10.0,
+                  max: 30.0,
+                  divisions: 4,
+                  label: _fontSize.round().toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      _fontSize = value;
+                    });
+                  },
+                ),
+              ),
+              Divider(),
+
+              // Dark/Light mode toggle
+              SwitchListTile(
+                title: Text(
+                  'Change Theme',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Text(
+                  _isDarkMode ? 'Dark' : 'Light',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                value: _isDarkMode,
+                onChanged: (value) {
+                  setState(() {
+                    _isDarkMode = value;
+                  });
+                },
+              ),
+              Divider(),
+
+              // Background selection
+              ListTile(
+                title: Text(
+                  'Background',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Text(
+                  _selectedBackground,
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                trailing: DropdownButton<String>(
+                  value: _selectedBackground,
+                  items: backgrounds
+                      .map((bg) => DropdownMenuItem(
+                    value: bg,
+                    child: Text(bg),
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBackground = value!;
+                    });
+                  },
+                ),
+              ),
+              Divider(),
+            ],
           ),
         ],
       ),

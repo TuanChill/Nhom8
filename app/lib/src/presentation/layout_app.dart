@@ -18,7 +18,7 @@ class _LayoutAppState extends State<LayoutApp> {
   final List<Widget> _pages = [
     const HomePage(),
     const AccountPage(),
-     SettingPage(),
+    SettingsScreen(),
   ];
 
   @override
