@@ -1,3 +1,4 @@
+// settings_screen.dart
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -10,6 +11,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _selectedFont = 'Roboto'; // Default font
   bool _isDarkMode = true; // Default theme mode
   String _selectedBackground = 'Background 1'; // Default background
+  double _fontSize = 16.0; // Default font size
 
   final List<String> backgrounds = [
     'Background 1',
@@ -27,6 +29,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'Background 5': 'https://i.pinimg.com/736x/0d/77/db/0d77db3a3b2bcfa025d66dfc34220e53.jpg',
   }; // Map of background options to image URLs
 
+  // Define the font families here
+  final Map<String, TextStyle> fontStyles = {
+    'Roboto': TextStyle(fontFamily: 'Roboto'),
+    'Arial': TextStyle(fontFamily: 'Arial'),
+    'Times New Roman': TextStyle(fontFamily: 'Times New Roman'),
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Background image as the base layer
           Positioned.fill(
             child: Image.network(
-              backgroundImages[_selectedBackground]!,
+              backgroundImages[_selectedBackground]! ?? '',
               fit: BoxFit.cover,
             ),
           ),
@@ -47,8 +56,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               // Language setting
               ListTile(
-                title: Text('Language'),
-                subtitle: Text(_selectedLanguage),
+                title: Text(
+                  'Language',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Text(
+                  _selectedLanguage,
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
                 trailing: DropdownButton<String>(
                   value: _selectedLanguage,
                   items: ['English', 'Tiếng Việt']
@@ -68,8 +83,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               // Font setting
               ListTile(
-                title: Text('Font'),
-                subtitle: Text(_selectedFont),
+                title: Text(
+                  'Font',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Text(
+                  _selectedFont,
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
                 trailing: DropdownButton<String>(
                   value: _selectedFont,
                   items: ['Roboto', 'Arial', 'Times New Roman']
@@ -87,10 +108,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               Divider(),
 
+              // Font size setting (moved here, below Font and above Change Theme)
+              ListTile(
+                title: Text(
+                  'Font Size',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Slider(
+                  value: _fontSize,
+                  min: 10.0,
+                  max: 30.0,
+                  divisions: 4,
+                  label: _fontSize.round().toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      _fontSize = value;
+                    });
+                  },
+                ),
+              ),
+              Divider(),
+
               // Dark/Light mode toggle
               SwitchListTile(
-                title: Text('Change Theme'),
-                subtitle: Text(_isDarkMode ? 'Dark' : 'Light'),
+                title: Text(
+                  'Change Theme',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Text(
+                  _isDarkMode ? 'Dark' : 'Light',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
                 value: _isDarkMode,
                 onChanged: (value) {
                   setState(() {
@@ -102,8 +150,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               // Background selection
               ListTile(
-                title: Text('Background'),
-                subtitle: Text(_selectedBackground),
+                title: Text(
+                  'Background',
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
+                subtitle: Text(
+                  _selectedBackground,
+                  style: fontStyles[_selectedFont]?.copyWith(fontSize: _fontSize),
+                ),
                 trailing: DropdownButton<String>(
                   value: _selectedBackground,
                   items: backgrounds
@@ -120,10 +174,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               Divider(),
-
-
-
-
             ],
           ),
         ],
