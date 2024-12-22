@@ -68,6 +68,12 @@
     "fullName": {
       "type": "string",
       "configurable": false
+    },
+    "notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::note.note",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
