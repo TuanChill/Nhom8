@@ -11,19 +11,19 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "text": {
+    "content": {
       "type": "text"
-    },
-    "users_permissions_user": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "notes"
     },
     "challenge": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::challenge.challenge",
+      "inversedBy": "notes"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
       "inversedBy": "notes"
     }
   }
