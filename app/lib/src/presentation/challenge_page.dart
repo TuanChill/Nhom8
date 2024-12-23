@@ -4,6 +4,7 @@ import 'package:daily_e/src/application/challenge_service.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
 import 'package:daily_e/src/presentation/setting_page.dart';
 import 'package:daily_e/src/presentation/note_page.dart';
+import 'package:daily_e/src/presentation/editnote_page.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'auth/setting_page.dart';
@@ -318,7 +319,19 @@ class _ChallengePageState extends State<ChallengePage>
                       builder: (context) =>
                           SettingsScreen()), // Navigate to SettingsScreen
                 );
-              } else if (value == 'Reset lesson') {
+              }
+              // để tạm cái note ở đây
+              else if (value == 'Note') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditNotePage(
+                      initialNote: 'Initial note content', // Ghi chú ban đầu (có thể bỏ qua nếu không cần)
+                    ),
+                  ),
+                );
+              }
+              else if (value == 'Reset lesson') {
                 // Reset lesson to the first page
                 setState(() {
                   currentPage = 1; // Set currentPage to 1 (first page)
@@ -336,6 +349,11 @@ class _ChallengePageState extends State<ChallengePage>
               PopupMenuItem<String>(
                 value: 'Settings',
                 child: Text('Settings'),
+              ),
+              // để t ở dây tý nhớ xóa
+              PopupMenuItem<String>(
+                value: 'Note',
+                child: Text('Notes'),
               ),
               PopupMenuItem<String>(
                 value: 'Reset lesson',
