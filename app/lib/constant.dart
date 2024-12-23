@@ -13,4 +13,5 @@ class API_URL {
   static String topics = '$baseUrl/topics';
   static String lessons = '$baseUrl/lessions';
   static String challenges = '$baseUrl/challenges';
+  static String notes = '$baseUrl/notes';
 }

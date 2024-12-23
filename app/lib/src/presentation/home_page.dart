@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  '${API_URL.urlHost}/${topics[index].thumbnail.url}',
+                  topics[index].thumbnail.url,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       width: 50,
