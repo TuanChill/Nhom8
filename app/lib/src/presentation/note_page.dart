@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:daily_e/src/presentation/editnote_page.dart';
 
 class NotePage extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class NotePage extends StatefulWidget {
 }
 
 class _NotePageState extends State<NotePage> {
+  String? _note = 'Here are your notes'; // Ghi chú mặc định
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,15 +16,32 @@ class _NotePageState extends State<NotePage> {
         title: Text('Your note'),
         actions: [
           IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context); // Đóng trang note
+            icon: Icon(Icons.edit),
+            onPressed: () async {
+              // Mở trang chỉnh sửa và chờ dữ liệu trả về
+              final editedNote = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditNotePage(initialNote: _note),
+                ),
+              );
+
+              // Cập nhật ghi chú nếu có thay đổi
+              if (editedNote != null) {
+                setState(() {
+                  _note = editedNote;
+                });
+              }
             },
           ),
         ],
       ),
       body: Center(
-        child: Text('Here are your notes'), // Nội dung của trang Note
+        child: Text(
+          _note ?? 'No notes yet.',
+          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
