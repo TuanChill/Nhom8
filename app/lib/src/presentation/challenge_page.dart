@@ -10,7 +10,6 @@ import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
-import 'auth/setting_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChallengePage extends StatefulWidget {
@@ -408,7 +407,9 @@ class _ChallengePageState extends State<ChallengePage>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NotePage()), // Navigate to NotePage
+                      builder: (context) => NotePage(
+                            challengeId: currentChallenge?.documentId ?? '',
+                          )), // Navigate to NotePage
                 );
               } else if (value == 'Settings') {
                 Navigator.push(
@@ -416,18 +417,6 @@ class _ChallengePageState extends State<ChallengePage>
                   MaterialPageRoute(
                       builder: (context) =>
                           SettingsScreen()), // Navigate to SettingsScreen
-                );
-              }
-              // để tạm cái note ở đây
-              else if (value == 'Note') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditNotePage(
-                      initialNote:
-                          'Initial note content', // Ghi chú ban đầu (có thể bỏ qua nếu không cần)
-                    ),
-                  ),
                 );
               } else if (value == 'Reset lesson') {
                 // Reset lesson to the first page
@@ -447,11 +436,6 @@ class _ChallengePageState extends State<ChallengePage>
               const PopupMenuItem<String>(
                 value: 'Settings',
                 child: Text('Settings'),
-              ),
-              // để t ở dây tý nhớ xóa
-              const PopupMenuItem<String>(
-                value: 'Note',
-                child: Text('Notes'),
               ),
               const PopupMenuItem<String>(
                 value: 'Reset lesson',

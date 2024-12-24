@@ -52,16 +52,6 @@ class _MyAppState extends State<MyApp> {
       }
     });
     scheduleDailyNotification();
-
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 2, // ID phải là duy nhất
-        channelKey: 'basic_channel',
-        title: 'Lời nhắc hàng ngày',
-        body: 'Đây là thông báo lúc 8h tối!',
-        notificationLayout: NotificationLayout.Default,
-      ),
-    );
   }
 
   @override

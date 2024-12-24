@@ -20,15 +20,14 @@ class SignInScreen extends StatelessWidget {
       // call login service
       try {
         final response = await UserService().login(emailC.text, passwordC.text);
-        print(response.jwt);
         // save token to storage
         SecureStorage().saveToken(response.jwt);
+        SecureStorage().saveUserId((response.user.id) as int);
 
         // call onLoginSuccess
         onLoginSuccess();
       } catch (e) {
         // show error message
-        print(e);
       }
     }
   }
