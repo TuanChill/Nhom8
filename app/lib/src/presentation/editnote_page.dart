@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class EditNotePage extends StatefulWidget {
   final Note? note;
+  final int challengeId;
 
-  const EditNotePage({this.note});
+  const EditNotePage({this.note, required this.challengeId});
 
   @override
   _EditNotePageState createState() => _EditNotePageState();
@@ -42,7 +43,8 @@ class _EditNotePageState extends State<EditNotePage> {
                 final editedNote = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TextEditPage(note: widget.note),
+                    builder: (context) => TextEditPage(
+                        note: widget.note, challengeId: widget.challengeId),
                   ),
                 );
                 if (editedNote != null) {
@@ -77,8 +79,9 @@ class _EditNotePageState extends State<EditNotePage> {
 
 class TextEditPage extends StatefulWidget {
   final Note? note;
+  final int challengeId;
 
-  TextEditPage({this.note});
+  TextEditPage({this.note, required this.challengeId});
 
   @override
   _TextEditPageState createState() => _TextEditPageState();
@@ -88,11 +91,14 @@ class _TextEditPageState extends State<TextEditPage> {
   TextEditingController _noteController = TextEditingController();
 
   Future<void> updateNote(String text) async {
-    // Gọi hàm updateNote từ NoteService
-    await NoteService().updateNote(
-      text,
-      widget.note!.documentId,
-    );
+    if (widget.note == null) {
+      await NoteService().createNote(text, widget.challengeId);
+    } else {
+      await NoteService().updateNote(
+        text,
+        widget.note!.documentId,
+      );
+    }
   }
 
   @override
@@ -124,7 +130,8 @@ class _TextEditPageState extends State<TextEditPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context, _noteController.text);
+                Navigator.pop(context);
+                Navigator.pop(context);
                 updateNote(_noteController.text);
               },
               child: const Text('Save'),

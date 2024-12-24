@@ -409,6 +409,7 @@ class _ChallengePageState extends State<ChallengePage>
                   MaterialPageRoute(
                       builder: (context) => NotePage(
                             challengeId: currentChallenge?.documentId ?? '',
+                            idChallenge: currentChallenge?.id ?? 0,
                           )), // Navigate to NotePage
                 );
               } else if (value == 'Settings') {

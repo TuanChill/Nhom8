@@ -6,7 +6,9 @@ import 'package:daily_e/src/presentation/editnote_page.dart';
 
 class NotePage extends StatefulWidget {
   final String challengeId;
-  const NotePage({super.key, required this.challengeId});
+  final int idChallenge;
+  const NotePage(
+      {super.key, required this.challengeId, required this.idChallenge});
   @override
   _NotePageState createState() => _NotePageState();
 }
@@ -105,7 +107,7 @@ class _NotePageState extends State<NotePage> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditNotePage(),
+        builder: (context) => EditNotePage(challengeId: widget.idChallenge),
       ),
     ).then((value) {
       // Fetch data lại sau khi trở về từ trang thêm ghi chú
@@ -119,6 +121,7 @@ class _NotePageState extends State<NotePage> {
       MaterialPageRoute(
         builder: (context) => EditNotePage(
           note: note,
+          challengeId: widget.idChallenge,
         ),
       ),
     ).then((value) {
