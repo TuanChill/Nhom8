@@ -5,7 +5,6 @@ import 'package:daily_e/src/application/note_service.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
 import 'package:daily_e/src/presentation/setting_page.dart';
 import 'package:daily_e/src/presentation/note_page.dart';
-import 'package:daily_e/src/presentation/editnote_page.dart';
 import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';

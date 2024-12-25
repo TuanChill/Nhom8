@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:daily_e/src/application/lesson_service.dart';
-import 'package:daily_e/src/presentation/challenge_page.dart';
+import 'package:daily_e/src/presentation/listen_and_read.dart';
 import 'package:flutter/material.dart';
+import 'package:daily_e/src/application/lesson_service.dart';
 import 'package:daily_e/src/domain/lesson_model.dart';
+import 'package:daily_e/src/presentation/challenge_page.dart';
 
 class LessonListPage extends StatefulWidget {
   final String topicId;
@@ -21,8 +22,10 @@ class _LessonListPage extends State<LessonListPage> {
   Timer? _debounce;
   bool _isLoading = false;
   bool _isFetchingMore = false;
+  bool _isListenAndReadMode = false; // Thêm chế độ Listen and Read
   int currentPage = 1;
   final int pageSize = 25;
+  Set<String> selectedLessonIds = {}; // Track selected lessons
 
   @override
   void initState() {
@@ -96,6 +99,81 @@ class _LessonListPage extends State<LessonListPage> {
     });
   }
 
+  Widget _buildLessonList() {
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...filteredLessons.map((lesson) {
+            final index = filteredLessons.indexOf(lesson);
+            final isSelected = selectedLessonIds.contains(lesson.documentId);
+
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.3),
+                ),
+              ),
+              child: ListTile(
+                leading: _isListenAndReadMode
+                    ? Checkbox(
+                        value: isSelected,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value == true) {
+                              selectedLessonIds.add(lesson.documentId);
+                            } else {
+                              selectedLessonIds.remove(lesson.documentId);
+                            }
+                          });
+                        },
+                      )
+                    : null,
+                title: Text(
+                  '${index + 1}. ${lesson.name}',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  "${lesson.name} challenges",
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChallengePage(
+                        lessonId: lesson.documentId,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          }).toList(),
+          if (_isFetchingMore)
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,65 +201,82 @@ class _LessonListPage extends State<LessonListPage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : filteredLessons.isEmpty
                     ? const Center(child: Text("No lessons found"))
-                    : NotificationListener<ScrollNotification>(
-                        onNotification: (ScrollNotification scrollInfo) {
-                          if (scrollInfo.metrics.pixels ==
-                              scrollInfo.metrics.maxScrollExtent) {
-                            if (!_isFetchingMore) {
-                              currentPage++;
-                              fetchTopics(loadMore: true);
-                            }
-                          }
-                          return false;
-                        },
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: filteredLessons.length +
-                              (_isFetchingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == filteredLessons.length) {
-                              return const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            }
-                            final lesson = filteredLessons[index];
-                            return ListTile(
-                              title: Text(
-                                '${index + 1}. ${lesson.name}',
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                "${lesson.name} challenges",
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.grey),
-                              ),
-                              trailing:
-                                  const Icon(Icons.arrow_forward_ios, size: 16),
-                              onTap: () {
-                                print("Tapped on: ${lesson.documentId}");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChallengePage(
-                                      lessonId: lesson.documentId,
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                    : _buildLessonList(),
           ),
+          Container(
+            color: Colors.teal[50], // Add background color
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isListenAndReadMode
+                          ? Colors.blue[200]
+                          : Colors.grey[300],
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isListenAndReadMode = true;
+                      });
+                    },
+                    child: const Text("Listen and Read"),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: !_isListenAndReadMode
+                          ? Colors.blue[200]
+                          : Colors.grey[300],
+                      textStyle: const TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isListenAndReadMode = false;
+                      });
+                    },
+                    child: const Text("Listen and Type"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_isListenAndReadMode)
+            Container(
+              color: Colors.teal[50], // Add background color
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Selected ${selectedLessonIds.length} lessons",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListenAndRead(
+                              lessonIds: selectedLessonIds.toList(),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.play_arrow),
+                      label: const Text("Start"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

@@ -8,7 +8,7 @@ void main() {
     NotificationChannel(
       channelKey: 'basic_channel',
       channelName: 'Basic notifications',
-      channelDescription: 'Notification channel for basic tests',
+      channelDescription: 'Notification channel',
       defaultColor: const Color(0xFF9D50DD),
       ledColor: Colors.white,
     )
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
         id: 1, // ID phải là duy nhất
         channelKey: 'basic_channel',
         title: 'Lời nhắc hàng ngày',
-        body: 'Đây là thông báo lúc 8h tối!',
+        body: 'Học bài liền tay, tiến bước tương lai!',
         notificationLayout: NotificationLayout.Default,
       ),
       schedule: NotificationCalendar(
