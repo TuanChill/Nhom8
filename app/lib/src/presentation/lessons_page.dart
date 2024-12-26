@@ -275,6 +275,7 @@ class _LessonListPage extends State<LessonListPage> {
                     child: const Text("Listen and Type"),
                   ),
                 ],
+
               ),
             ),
           ),
