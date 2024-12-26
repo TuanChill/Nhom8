@@ -1,6 +1,6 @@
-import 'package:daily_e/constant.dart';
 import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/application/user_service.dart';
+import 'package:daily_e/src/presentation/auth/signup_page.dart' as signup;
 import 'package:daily_e/src/presentation/button.dart';
 import 'package:daily_e/src/presentation/text_field.dart';
 import 'package:daily_e/style.dart';
@@ -153,7 +153,13 @@ class SignInScreen extends StatelessWidget {
                         child: CustomRichText(
                           title: 'Don’t have an account?',
                           subtitle: ' Create here',
-                          onTab: () {},
+                          onTab: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const signup.SignUpScreen()));
+                          },
                           subtitleTextStyle: GoogleFonts.plusJakartaSans(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -167,35 +173,6 @@ class SignInScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 45),
-                    child: Column(
-                      children: [
-                        const DividerRow(title: 'Or Sign In with'),
-                        const SizedBox(height: 24),
-                        SecondaryButton(
-                            height: 56,
-                            textColor: AppColor.kGrayscaleDark100,
-                            width: 280,
-                            onTap: () {},
-                            borderRadius: 24,
-                            bgColor: AppColor.kBackground.withOpacity(0.3),
-                            text: 'Continue with Google',
-                            icons: ImagesPath.kGoogleIcon),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: TermsAndPrivacyText(
-                      title1: '  By signing up you agree to our',
-                      title2: ' Terms ',
-                      title3: '  and',
-                      title4: ' Conditions of Use',
-                    ),
-                  ),
-                  const SizedBox(height: 24),
                 ]),
               ),
             ),
