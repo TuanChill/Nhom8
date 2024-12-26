@@ -35,16 +35,9 @@ class UserService {
     return response;
   }
 
-  Future<Response> getUserById(
-      String email, password, username, fullName) async {
-    Response response = await post(
-      Uri.parse(API_URL.register),
-      body: {
-        'email': email,
-        'username': username,
-        'password': password,
-        'fullName': fullName,
-      },
+  Future<Response> getUserById(String id) async {
+    Response response = await get(
+      Uri.parse('${API_URL.users}/$id'),
     );
 
     return response;

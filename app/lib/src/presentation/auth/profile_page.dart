@@ -7,6 +7,8 @@ import 'package:daily_e/src/presentation/auth/edit_profile.dart';
 import 'package:daily_e/src/presentation/auth/edit_pw.dart';
 import 'package:daily_e/src/presentation/auth/activity_page.dart';
 import 'package:daily_e/src/presentation/auth/forgotpassword_page.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 class ProfilePage extends StatefulWidget {
   final Future<void> Function() onLogoutSuccess;
@@ -18,9 +20,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final Map<String, String> user = {
-    "username": "abc",
-    "email": "luongtuan27081102@gmail.com",
-    "fullName": "Tuấn Lương"
+    "username": "",
+    "email": "",
+    "fullName": ""
   };
 
   void handleSignOut() async {
@@ -34,6 +36,19 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void handleGetUserById() async {
+    // Get user by id logic
+    String user_id = (await SecureStorage().getUserId())!;
+    Response res = await UserService().getUserById(user_id);
+
+    final Map<String, dynamic> data = jsonDecode(res.body);
+    setState(() {
+      user["username"] = data["username"];
+      user["email"] = data["email"];
+      user["fullName"] = data["fullName"];
+    });
+  }
+
   void handleDeleteAccount() async {
     // Delete account logic
     String user_id = (await SecureStorage().getUserId())!;
@@ -45,6 +60,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
     SecureStorage().clear();
     widget.onLogoutSuccess();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handleGetUserById();
   }
 
   @override
