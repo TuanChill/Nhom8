@@ -1,7 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:daily_e/src/presentation/layout_app.dart';
-import 'package:daily_e/themes.dart';
+import 'package:daily_e/src/presentation/setting_page.dart';
+import 'package:daily_e/src/provider/FontProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   AwesomeNotifications().initialize(null, [
@@ -13,7 +15,12 @@ void main() {
       ledColor: Colors.white,
     )
   ]);
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => FontProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -56,11 +63,19 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Daily E',
-      theme: lightMode,
-      darkTheme: darkMode,
-      home: const LayoutApp(),
+    return Consumer<FontProvider>(
+      builder: (context, fontProvider, child) {
+        return MaterialApp(
+          title: 'Daily E',
+          theme: ThemeData(
+            fontFamily: fontProvider.fontFamily,
+            textTheme: TextTheme(
+              bodyMedium: TextStyle(fontSize: fontProvider.fontSize),
+            ),
+          ),
+          home: const LayoutApp(),
+        );
+      },
     );
   }
 }
