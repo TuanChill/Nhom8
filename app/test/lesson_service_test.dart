@@ -8,7 +8,7 @@ import 'package:daily_e/src/application/lesson_service.dart';
 
 void main() {
   group('LessonService', () {
-    test('returns list of lessons by topic when API response is successful',
+    test('Trả về danh sách các bài học theo chủ đề khi phản hồi API thành công',
         () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
@@ -43,7 +43,7 @@ void main() {
       expect(lessons[1].documentId, equals('lesson_2'));
     });
 
-    test('throws exception when fetching lessons by topic fails', () async {
+    test('Ném exception khi lấy bài học theo chủ đề không thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Error', 500);
@@ -57,7 +57,7 @@ void main() {
           throwsException);
     });
 
-    test('returns a lesson by document ID when API response is successful',
+    test('Trả về bài học theo ID tài liệu khi phản hồi API thành công',
         () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
@@ -81,7 +81,7 @@ void main() {
       expect(lesson.name, equals('Lesson 1'));
     });
 
-    test('throws exception when fetching lesson by ID fails', () async {
+    test('Ném exception khi lấy bài học theo ID không thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Error', 404);
@@ -94,7 +94,7 @@ void main() {
       expect(() => lessonService.getLessonById('lesson_1'), throwsException);
     });
 
-    test('handles empty lesson list response gracefully', () async {
+    test('Xử lý phản hồi danh sách bài học trống một cách nhanh chóng', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
