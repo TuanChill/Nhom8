@@ -19,7 +19,11 @@ void main() {
       });
 
       final noteService = NoteService();
+<<<<<<< Updated upstream
       final String text = "Đây là một ghi chú thử nghiệm.";
+=======
+      final String text = "Đây là test note.";
+>>>>>>> Stashed changes
       final int challengeId = 1;
 
       // Act
@@ -109,7 +113,7 @@ void main() {
       expect(response.statusCode, equals(200));
     });
 
-    test('throws exception when deleting a note fails', () async {
+    test('ném ngoại lệ khi xóa ghi chú không thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Error', 500);

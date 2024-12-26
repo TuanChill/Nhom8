@@ -8,7 +8,7 @@ import 'package:daily_e/src/application/topic_service.dart';
 
 void main() {
   group('TopicService', () {
-    test('returns list of topics when API response is successful', () async {
+    test('trả về danh sách chủ đề khi phản hồi API thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
@@ -59,7 +59,7 @@ void main() {
           topics[1].thumbnail.name, equals('')); // Default value for thumbnail
     });
 
-    test('throws exception when API response is unsuccessful', () async {
+    test('ném Exception khi phản hồi API không thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Error', 500);
@@ -72,7 +72,7 @@ void main() {
       expect(() => topicService.getTopics(), throwsException);
     });
 
-    test('handles null values in API response gracefully', () async {
+    test('xử lý các giá trị null trong phản hồi API một cách duyên dáng', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(

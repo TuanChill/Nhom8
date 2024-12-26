@@ -16,7 +16,7 @@ Future<String> login(String email, String password, {Client? client}) async {
     final data = jsonDecode(response.body);
     return data['user']['username'];
   } else {
-    throw Exception('Login failed');
+    throw Exception('Đăng nhập thất bại');
   }
 }
 
@@ -71,7 +71,11 @@ void main() {
       expect(username, equals('testuser'));
     });
 
+<<<<<<< Updated upstream
     test('ném Exception khi đăng nhập thất bại', () async {
+=======
+    test('Ném Exception khi đăng nhập thất bại', () async {
+>>>>>>> Stashed changes
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Thông tin xác thực không hợp lệ', 401);
@@ -90,7 +94,7 @@ void main() {
   });
 
   group('Register', () {
-    test('returns Response when registration is successful', () async {
+    test('trả về Response khi đăng ký thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
@@ -130,10 +134,10 @@ void main() {
       );
     });
 
-    test('returns error Response when registration fails', () async {
+    test('trả về lỗi Phản hồi khi đăng ký thất bại', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
-        return Response('Email already exists', 400);
+        return Response('Email đã tồn tại', 400);
       });
 
       // Act
@@ -147,7 +151,7 @@ void main() {
 
       // Assert
       expect(response.statusCode, equals(400));
-      expect(response.body, equals('Email already exists'));
+      expect(response.body, equals('Email đã tồn tại'));
     });
   });
 }
