@@ -8,7 +8,7 @@ import 'package:daily_e/src/domain/note_model.dart';
 
 void main() {
   group('NoteService', () {
-    test('creates a note successfully when API response is 200', () async {
+    test('Tạo ghi chú thành công khi phản hồi API là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
@@ -19,7 +19,7 @@ void main() {
       });
 
       final noteService = NoteService();
-      final String text = "This is a test note.";
+      final String text = "Đây là một ghi chú thử nghiệm.";
       final int challengeId = 1;
 
       // Act
@@ -29,7 +29,7 @@ void main() {
       expect(response.statusCode, equals(200));
     });
 
-    test('updates a note successfully when API response is 200', () async {
+    test('Cập nhật ghi chú thành công khi API phản hồi là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
@@ -40,7 +40,7 @@ void main() {
       });
 
       final noteService = NoteService();
-      final String text = "Updated note content.";
+      final String text = "Cập nhật nội dung ghi chú.";
       final String documentId = "note_1";
 
       // Act
@@ -50,7 +50,7 @@ void main() {
       expect(response.statusCode, equals(200));
     });
 
-    test('fetches notes successfully when API response is 200', () async {
+    test('Lấy ghi chú thành công khi phản hồi API là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
@@ -59,9 +59,9 @@ void main() {
               {
                 "id": 1,
                 "documentId": "note_1",
-                "content": "This is a test note."
+                "content": "Đây là một ghi chú thử nghiệm."
               },
-              {"id": 2, "documentId": "note_2", "content": "Another test note."}
+              {"id": 2, "documentId": "note_2", "content": "Ghi chú thử nghiệm khác."}
             ]
           }),
           200,
@@ -77,10 +77,10 @@ void main() {
       expect(notes, isA<List<Note>>());
       expect(notes.length, equals(2));
       expect(notes[0].documentId, equals("note_1"));
-      expect(notes[1].content, equals("Another test note."));
+      expect(notes[1].content, equals("Ghi chú thử nghiệm khác."));
     });
 
-    test('throws exception when fetching notes fails', () async {
+    test('Ném exception khi việc lấy ghi chú không thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Error', 500);
@@ -92,11 +92,11 @@ void main() {
       expect(() => noteService.getNotes("challenge_1"), throwsException);
     });
 
-    test('deletes a note successfully when API response is 200', () async {
+    test('Xóa ghi chú thành công khi API phản hồi là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
-            jsonEncode({"message": "Note deleted successfully"}), 200);
+            jsonEncode({"message": "Xóa ghi chú thành công"}), 200);
       });
 
       final noteService = NoteService();

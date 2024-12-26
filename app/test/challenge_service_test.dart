@@ -16,17 +16,17 @@ void main() {
       noteService = NoteService();
     });
 
-    test('creates a note successfully when API response is 200', () async {
+    test('Tạo ghi chú thành công khi phản hồi API là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
-        return Response(jsonEncode({'id': 1, 'content': 'Note Content'}), 200);
+        return Response(jsonEncode({'id': 1, 'content': 'Nội dung ghi chú'}), 200);
       });
 
       NoteService noteService = NoteService();
       Response response =
           await mockHTTPClient.post(Uri.parse('http://api.url'), body: {
         "data": {
-          "content": "Note Content",
+          "content": "Nội dung ghi chú",
           "challenge": 1,
           "users_permissions_user": "1"
         }
@@ -34,37 +34,37 @@ void main() {
 
       // Assert
       expect(response.statusCode, 200);
-      expect(jsonDecode(response.body)['content'], 'Note Content');
+      expect(jsonDecode(response.body)['content'], 'Nội dung ghi chú');
     });
 
-    test('updates a note successfully when API response is 200', () async {
+    test('Cập nhật ghi chú thành công khi phản hồi API là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
-            jsonEncode({'id': 1, 'content': 'Updated Content'}), 200);
+            jsonEncode({'id': 1, 'content': 'Cập nhật ghi chú'}), 200);
       });
 
       NoteService noteService = NoteService();
       Response response =
           await mockHTTPClient.put(Uri.parse('http://api.url/note_id'), body: {
         "data": {
-          "content": "Updated Content",
+          "content": "Cập nhật ghi chú",
         }
       });
 
       // Assert
       expect(response.statusCode, 200);
-      expect(jsonDecode(response.body)['content'], 'Updated Content');
+      expect(jsonDecode(response.body)['content'], 'Cập nhật ghi chú');
     });
 
-    test('fetches notes successfully when API response is 200', () async {
+    test('Lấy ghi chú thành công khi phản hồi API là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
           jsonEncode({
             'data': [
-              {'id': 1, 'documentId': 'doc_1', 'content': 'Note 1'},
-              {'id': 2, 'documentId': 'doc_2', 'content': 'Note 2'},
+              {'id': 1, 'documentId': 'doc_1', 'content': 'Ghi chú 1'},
+              {'id': 2, 'documentId': 'doc_2', 'content': 'Ghi chú 2'},
             ]
           }),
           200,
@@ -77,11 +77,11 @@ void main() {
       // Assert
       expect(notes, isA<List<Note>>());
       expect(notes.length, 2);
-      expect(notes[0].content, 'Note 1');
-      expect(notes[1].content, 'Note 2');
+      expect(notes[0].content, 'Ghi chú 1');
+      expect(notes[1].content, 'Ghi chú 2');
     });
 
-    test('deletes a note successfully when API response is 200', () async {
+    test('Xóa ghi chú thành công khi phản hồi API là 200', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('', 200);
@@ -95,7 +95,7 @@ void main() {
       expect(response.statusCode, 200);
     });
 
-    test('throws exception when API response is unsuccessful', () async {
+    test('Ném exception khi phản hồi API không thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Error', 500);
