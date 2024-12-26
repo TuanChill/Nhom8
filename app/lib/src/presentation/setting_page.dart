@@ -53,36 +53,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListView(
             children: [
-              ListTile(
-                title: Text(
-                  'Language',
-                  style: TextStyle(
-                    fontFamily: fontProvider.fontFamily,
-                    fontSize: fontProvider.fontSize,
-                  ),
-                ),
-                subtitle: Text(
-                  _selectedLanguage,
-                  style: TextStyle(
-                    fontFamily: fontProvider.fontFamily,
-                    fontSize: fontProvider.fontSize,
-                  ),
-                ),
-                trailing: DropdownButton<String>(
-                  value: _selectedLanguage,
-                  items: ['English', 'Tiếng Việt']
-                      .map((lang) => DropdownMenuItem(
-                            value: lang,
-                            child: Text(lang),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedLanguage = value!;
-                    });
-                  },
-                ),
-              ),
               Divider(),
               ListTile(
                 title: Text(
