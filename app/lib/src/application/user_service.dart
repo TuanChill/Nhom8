@@ -49,4 +49,14 @@ class UserService {
 
     return response;
   }
+
+  Future<Response> deleteUserById(String id) async {
+    Response response = await delete(
+      Uri.parse('${API_URL.users}/$id'),
+    );
+
+    print(response.body);
+
+    return response;
+  }
 }

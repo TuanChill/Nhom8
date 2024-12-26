@@ -11,6 +11,7 @@ class API_URL {
   static String login = '$baseUrl/auth/local';
   static String register = '$baseUrl/auth/local/register';
   static String topics = '$baseUrl/topics';
+  static String users = '$baseUrl/users';
   static String lessons = '$baseUrl/lessions';
   static String challenges = '$baseUrl/challenges';
   static String notes = '$baseUrl/notes';
