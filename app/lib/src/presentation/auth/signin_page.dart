@@ -128,14 +128,15 @@ class SignInScreen extends StatelessWidget {
                       button.PrimaryTextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ForgotPasswordPage()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordPage(),
+                            ),
+                          );
                         },
                         title: 'Forgot Password?',
                         textStyle: const TextStyle(),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 32),
