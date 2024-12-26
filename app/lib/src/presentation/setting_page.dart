@@ -69,17 +69,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontSize: fontProvider.fontSize,
                   ),
                 ),
-                trailing: DropdownButton<String>(
-                  value: fontProvider.fontFamily,
-                  items: fonts
-                      .map((font) => DropdownMenuItem(
-                            value: font,
-                            child: Text(font),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    fontProvider.updateFontFamily(value!);
+                trailing: PopupMenuButton<String>(
+                  initialValue: fontProvider.fontFamily,
+                  onSelected: (value) {
+                    fontProvider.updateFontFamily(value); // Cập nhật font khi chọn
                   },
+                  itemBuilder: (context) {
+                    return fonts
+                        .map((font) => PopupMenuItem<String>(
+                      value: font,
+                      child: Text(font),
+                    ))
+                        .toList();
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        fontProvider.fontFamily,
+                        style: TextStyle(
+                          fontFamily: fontProvider.fontFamily,
+                          fontSize: fontProvider.fontSize,
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down), // Hiển thị icon mũi tên xuống
+                    ],
+                  ),
                 ),
               ),
               Divider(),
@@ -141,21 +156,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontSize: fontProvider.fontSize,
                   ),
                 ),
-                trailing: DropdownButton<String>(
-                  value: _selectedBackground,
-                  items: backgrounds
-                      .map((bg) => DropdownMenuItem(
-                            value: bg,
-                            child: Text(bg),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
+                trailing: PopupMenuButton<String>(
+                  initialValue: _selectedBackground,
+                  onSelected: (value) {
                     setState(() {
-                      _selectedBackground = value!;
+                      _selectedBackground = value; // Cập nhật nền đã chọn
                     });
                   },
+                  itemBuilder: (context) {
+                    return backgrounds
+                        .map((background) => PopupMenuItem<String>(
+                      value: background,
+                      child: Text(background),
+                    ))
+                        .toList();
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _selectedBackground,
+                        style: TextStyle(
+                          fontFamily: fontProvider.fontFamily,
+                          fontSize: fontProvider.fontSize,
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down), // Biểu tượng mũi tên xuống
+                    ],
+                  ),
                 ),
               ),
+
               Divider(),
             ],
           ),
