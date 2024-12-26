@@ -45,7 +45,7 @@ Future<Response> register(
 
 void main() {
   group('Login', () {
-    test('returns username when login is successful', () async {
+    test('trả về tên người dùng khi đăng nhập thành công', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response(
@@ -71,10 +71,10 @@ void main() {
       expect(username, equals('testuser'));
     });
 
-    test('throws Exception when login fails', () async {
+    test('ném Exception khi đăng nhập thất bại', () async {
       // Arrange
       final mockHTTPClient = MockClient((request) async {
-        return Response('Invalid credentials', 401);
+        return Response('Thông tin xác thực không hợp lệ', 401);
       });
 
       // Act & Assert
