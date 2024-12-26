@@ -2,6 +2,7 @@ import 'package:daily_e/src/application/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_e/src/presentation/auth/edit_profile.dart';
 import 'package:daily_e/src/presentation/auth/edit_pw.dart';
+import 'package:daily_e/src/presentation/auth/activity_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final Future<void> Function() onLogoutSuccess;
@@ -103,7 +104,13 @@ class _ProfilePageState extends State<ProfilePage> {
               leading: const Icon(Icons.history),
               title: const Text('Activity history'),
               trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
+              onTap: () {
+                // Điều hướng đến trang chỉnh sửa profile
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ActivityHistory()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.upgrade),
