@@ -1,7 +1,8 @@
 import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/application/user_service.dart';
+import 'package:daily_e/src/presentation/auth/forgotpassword_page.dart';
 import 'package:daily_e/src/presentation/auth/signup_page.dart' as signup;
-import 'package:daily_e/src/presentation/button.dart';
+import 'package:daily_e/src/presentation/button.dart' as button;
 import 'package:daily_e/src/presentation/text_field.dart';
 import 'package:daily_e/style.dart';
 import 'package:flutter/material.dart';
@@ -124,8 +125,14 @@ class SignInScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      PrimaryTextButton(
-                        onPressed: () {},
+                      button.PrimaryTextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgotPasswordPage()));
+                        },
                         title: 'Forgot Password?',
                         textStyle: const TextStyle(),
                       )
@@ -134,7 +141,7 @@ class SignInScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                   Column(
                     children: [
-                      PrimaryButton(
+                      button.PrimaryButton(
                         elevation: 0,
                         onTap: handleLogin,
                         text: 'LogIn',

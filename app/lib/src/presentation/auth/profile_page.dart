@@ -91,12 +91,6 @@ class _ProfilePageState extends State<ProfilePage> {
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {},
             ),
-            ListTile(
-              leading: const Icon(Icons.upgrade),
-              title: const Text('Upgrade PRO - Remove Ads 🔥'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {},
-            ),
             const SizedBox(height: 24),
             Column(
               children: [
