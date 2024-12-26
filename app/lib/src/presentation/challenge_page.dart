@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:daily_e/src/application/challenge_service.dart';
+import 'package:daily_e/src/application/note_service.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
 import 'package:daily_e/src/presentation/setting_page.dart';
 import 'package:daily_e/src/presentation/note_page.dart';
-import 'package:daily_e/src/presentation/editnote_page.dart';
+import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'auth/setting_page.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChallengePage extends StatefulWidget {
@@ -27,6 +28,8 @@ class _ChallengePageState extends State<ChallengePage>
   final TextEditingController _inputController = TextEditingController();
   String hintMessage = "";
   String hintAnswer = "";
+
+  final TextEditingController _inputNoteController = TextEditingController();
 
   int currentPage = 1;
   int totalPages = 21;
@@ -82,39 +85,6 @@ class _ChallengePageState extends State<ChallengePage>
     }
   }
 
-  void _showTopSnackBar(String message, Color backgroundColor) {
-    final overlay = Overlay.of(context);
-    final overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).padding.top + 10,
-        left: 16,
-        right: 16,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    overlay?.insert(overlayEntry);
-
-    // Remove the SnackBar after a delay
-    Future.delayed(const Duration(seconds: 2), () {
-      overlayEntry.remove();
-    });
-  }
-
   void _checkAnswer() {
     if (currentChallenge != null) {
       String userInput = _inputController.text.trim().toLowerCase();
@@ -132,7 +102,12 @@ class _ChallengePageState extends State<ChallengePage>
       }
 
       if (userInput == correctAnswer) {
-        _showTopSnackBar('Correct answer! 🎉', Colors.green);
+        SnackBarUtils.showTopSnackBar(
+          context: context,
+          message: 'Correct answer! 🎉',
+          backgroundColor: Colors.green,
+        );
+
         setState(() {
           hintMessage = ""; // Xóa gợi ý nếu đúng
           hintAnswer = currentChallenge?.answer ?? ""; // Hiển thị đáp án đúng
@@ -140,7 +115,11 @@ class _ChallengePageState extends State<ChallengePage>
         });
       } else {
         String hint = _generateHint(userInput, correctAnswer);
-        _showTopSnackBar('Incorrect answer. Try again! ❌', Colors.teal);
+        SnackBarUtils.showTopSnackBar(
+          context: context,
+          message: 'Incorrect answer. Try again! ❌',
+          backgroundColor: Colors.teal,
+        );
         setState(() {
           hintMessage = "Hint: $hint";
         });
@@ -179,7 +158,11 @@ class _ChallengePageState extends State<ChallengePage>
           hintAnswer = currentChallenge!.answer;
         }
       });
-      _showTopSnackBar('Answer revealed! ✔️', Colors.orange);
+      SnackBarUtils.showTopSnackBar(
+        context: context,
+        message: 'Answer revealed! ✔️',
+        backgroundColor: Colors.orange,
+      );
     }
   }
 
@@ -249,7 +232,7 @@ class _ChallengePageState extends State<ChallengePage>
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         activeTimeInSeconds++;
       });
@@ -273,9 +256,122 @@ class _ChallengePageState extends State<ChallengePage>
     return "$minutes minutes";
   }
 
+  void saveNote() async {
+    final text = _inputNoteController.text;
+    Response res = await NoteService().createNote(text, currentChallenge!.id);
+    if (!mounted) return; // Check if the widget is still mounted
+    if (res.statusCode == 201) {
+      SnackBarUtils.showTopSnackBar(
+        context: context,
+        message: 'Note saved successfully! 📝',
+        backgroundColor: Colors.green,
+      );
+      Navigator.pop(context); // Đóng drawer
+    } else if (res.statusCode == 401) {
+      SnackBarUtils.showTopSnackBar(
+        context: context,
+        message: 'Please login! 🔒',
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+  void showNotesDrawer(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Quan trọng để tránh bị che
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "Leave a note",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Please let us know what is going on below.",
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _inputNoteController,
+                  decoration: InputDecoration(
+                    hintText: "Leave note here...",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        saveNote();
+                        // Navigator.pop(context); // Đóng drawer
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                      ),
+                      child: const Text("Leave Note",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Đóng drawer
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
+                      child: const Text("Cancel",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.grey[200],
@@ -303,14 +399,17 @@ class _ChallengePageState extends State<ChallengePage>
         actions: [
           PopupMenuButton<String>(
             icon: Icon(Icons.more_horiz, color: Colors.grey[700]),
-            offset: Offset(0, 40), // Đẩy menu xuống dưới icon
+            offset: const Offset(0, 40), // Đẩy menu xuống dưới icon
             onSelected: (value) {
               // note, setting, reset
               if (value == 'View notes') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NotePage()), // Navigate to NotePage
+                      builder: (context) => NotePage(
+                            challengeId: currentChallenge?.documentId ?? '',
+                            idChallenge: currentChallenge?.id ?? 0,
+                          )), // Navigate to NotePage
                 );
               } else if (value == 'Settings') {
                 Navigator.push(
@@ -319,19 +418,7 @@ class _ChallengePageState extends State<ChallengePage>
                       builder: (context) =>
                           SettingsScreen()), // Navigate to SettingsScreen
                 );
-              }
-              // để tạm cái note ở đây
-              else if (value == 'Note') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditNotePage(
-                      initialNote: 'Initial note content', // Ghi chú ban đầu (có thể bỏ qua nếu không cần)
-                    ),
-                  ),
-                );
-              }
-              else if (value == 'Reset lesson') {
+              } else if (value == 'Reset lesson') {
                 // Reset lesson to the first page
                 setState(() {
                   currentPage = 1; // Set currentPage to 1 (first page)
@@ -342,20 +429,15 @@ class _ChallengePageState extends State<ChallengePage>
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'View notes',
                 child: Text('View notes'),
               ),
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'Settings',
                 child: Text('Settings'),
               ),
-              // để t ở dây tý nhớ xóa
-              PopupMenuItem<String>(
-                value: 'Note',
-                child: Text('Notes'),
-              ),
-              PopupMenuItem<String>(
+              const PopupMenuItem<String>(
                 value: 'Reset lesson',
                 child: Text('Reset lesson'),
               ),
@@ -430,22 +512,6 @@ class _ChallengePageState extends State<ChallengePage>
                     ],
                   ),
                   const SizedBox(height: 20),
-                  // TextField(
-                  //   controller: _inputController, // Liên kết controller
-                  //   style: const TextStyle(color: Colors.black),
-                  //   decoration: InputDecoration(
-                  //     hintText: 'Type what you hear...',
-                  //     hintStyle: const TextStyle(color: Colors.grey),
-                  //     filled: true,
-                  //     fillColor: Colors.grey[200],
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //       borderSide: BorderSide.none,
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 10),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -507,6 +573,33 @@ class _ChallengePageState extends State<ChallengePage>
                             ],
                           ),
                         ),
+                      const SizedBox(height: 20),
+                      if (hintAnswer.isNotEmpty)
+                        ElevatedButton.icon(
+                          onPressed: () => showNotesDrawer(context),
+                          icon: const Icon(
+                            Icons.edit,
+                            size: 24.0,
+                            color: Colors.black, // Màu biểu tượng
+                          ),
+                          label: const Text(
+                            'Add Notes',
+                            style: TextStyle(
+                              color: Colors.white, // Màu chữ
+                              fontSize: 14,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFF4D6A73), // Màu nền của nút
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0, vertical: 8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8.0), // Bo góc nút
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                   const Spacer(),
@@ -541,7 +634,7 @@ class _ChallengePageState extends State<ChallengePage>
                               vertical: 15, horizontal: 30),
                         ),
                         child: Text(hintAnswer.isNotEmpty ? 'Next' : 'Check',
-                            style: TextStyle(color: Colors.white)),
+                            style: const TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),

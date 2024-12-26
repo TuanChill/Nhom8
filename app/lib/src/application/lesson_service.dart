@@ -25,4 +25,19 @@ class LessonService {
       throw Exception(response.reasonPhrase);
     }
   }
+
+  Future<Lesson> getLessonById(String documentId) async {
+    Response response =
+        await get(Uri.parse('${API_URL.lessons}/$documentId'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return Lesson.fromJson(data);
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
 }

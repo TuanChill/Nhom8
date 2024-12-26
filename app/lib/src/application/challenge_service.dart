@@ -30,4 +30,23 @@ class ChallengeService {
       throw Exception(response.reasonPhrase);
     }
   }
+
+  Future<List<Challenge>> getChallenges(String lessonId) async {
+    Response response = await get(
+        Uri.parse(
+            '${API_URL.challenges}?filters[lession][documentId][\$eq]=$lessonId&populate=*&pagination[page]=1&pagination[pageSize]=10000'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        });
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final List<dynamic> challengesJson = data['data'];
+
+      return challengesJson.map((json) => Challenge.fromJson(json)).toList();
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
 }

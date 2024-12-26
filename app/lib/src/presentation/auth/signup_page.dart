@@ -1,218 +1,156 @@
-import 'package:daily_e/constant.dart';
-import 'package:daily_e/src/presentation/on_boarding_sreen.dart';
-import 'package:daily_e/src/presentation/text_field.dart';
-import 'package:daily_e/style.dart';
+import 'package:daily_e/src/application/storage.dart';
+import 'package:daily_e/src/application/user_service.dart';
+import 'package:daily_e/src/presentation/account.dart';
+import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 
-class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
-  final TextEditingController firstName = TextEditingController();
-  final TextEditingController listName = TextEditingController();
-  final TextEditingController emailC = TextEditingController();
-  final TextEditingController passwordC = TextEditingController();
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignUpScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.kWhite,
+      backgroundColor: AppColors.kWhite,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+          backgroundColor: AppColors.kWhite,
+          elevation: 0,
+          leading: const BackButton(
+            color: AppColors.kPrimary,
+          )),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: SizedBox(
-            width: 327,
-            child: Column(children: [
-              Text(
-                'Create Account',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ).copyWith(
-                    color: AppColor.kGrayscaleDark100,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'We happy to see you. Sign Up to your account',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.kWhite)
-                    .copyWith(
-                        color: AppColor.kGrayscale40,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'First Name',
-                        style: GoogleFonts.plusJakartaSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.kWhite)
-                            .copyWith(
-                                color: AppColor.kGrayscaleDark100,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                      ),
-                      const SizedBox(height: 8),
-                      PrimaryTextFormField(
-                        borderRadius: BorderRadius.circular(24),
-                        hintText: 'Khalid',
-                        controller: firstName,
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Last Name',
-                        style: GoogleFonts.plusJakartaSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.kWhite)
-                            .copyWith(
-                                color: AppColor.kGrayscaleDark100,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      PrimaryTextFormField(
-                        borderRadius: BorderRadius.circular(24),
-                        hintText: 'Mohammed',
-                        controller: listName,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Email',
-                    style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColor.kWhite)
-                        .copyWith(
-                            color: AppColor.kGrayscaleDark100,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14),
-                  ),
-                  const SizedBox(height: 7),
-                  PrimaryTextFormField(
-                    borderRadius: BorderRadius.circular(24),
-                    hintText: 'Khaledmohammed@gmail.com',
-                    controller: emailC,
-                  )
-                ],
-              ),
-              const SizedBox(height: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Password',
-                    style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColor.kWhite)
-                        .copyWith(
-                            color: AppColor.kGrayscaleDark100,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14),
-                  ),
-                  const SizedBox(height: 8),
-                  PasswordTextField(
-                      borderRadius: BorderRadius.circular(24),
-                      hintText: 'Password',
-                      controller: passwordC,
-                      width: 327,
-                      height: 52)
-                ],
-              ),
-              const SizedBox(height: 28),
-              Column(
-                children: [
-                  PrimaryButton(
-                    elevation: 0,
-                    onTap: () {},
-                    text: 'Create Account',
-                    bgColor: AppColor.kPrimary,
-                    borderRadius: 20,
-                    height: 46,
-                    width: 327,
-                    textColor: AppColor.kWhite,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomRichText(
-                    title: 'Already have an account? ',
-                    subtitle: 'Log In',
-                    onTab: () {},
-                    subtitleTextStyle: GoogleFonts.plusJakartaSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColor.kWhite)
-                        .copyWith(
-                            color: AppColor.kGrayscaleDark100,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14),
-                  )
-                ],
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: DividerRow(title: 'Or Sign Up with'),
-                    ),
-                    const SizedBox(height: 24),
-                    SecondaryButton(
-                        height: 56,
-                        textColor: AppColor.kGrayscaleDark100,
-                        width: 260,
-                        onTap: () {},
-                        borderRadius: 24,
-                        bgColor: AppColor.kBackground.withOpacity(0.3),
-                        text: 'Continue with Google',
-                        icons: ImagesPath.kGoogleIcon),
-                  ],
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey, // Assign _formKey to the Form widget
+          child: Center(
+            child: Column(
+              children: [
+                const Text('Create Account',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+                const SizedBox(height: 5),
+                const Text('Please enter your details below',
+                    style: TextStyle(fontSize: 14, color: AppColors.kGrey60)),
+                const SizedBox(height: 30),
+                // FullName.
+                AuthField(
+                  title: 'Full Name',
+                  hintText: 'Enter your name',
+                  controller: _nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Name is required';
+                    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
+                      return 'Please enter a valid name';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
                 ),
-              ),
-              const SizedBox(height: 23),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                child: TermsAndPrivacyText(
-                  title1: '  By signing up you agree to our',
-                  title2: ' Terms ',
-                  title3: '  and',
-                  title4: ' Conditions of Use',
+                const SizedBox(height: 15),
+                AuthField(
+                  title: 'Username',
+                  hintText: 'Enter your username',
+                  controller: _usernameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Name is required';
+                    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
+                      return 'Please enter a valid username';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
                 ),
-              ),
-            ]),
+                const SizedBox(height: 15),
+                // Email Field.
+                AuthField(
+                  title: 'E-mail',
+                  hintText: 'Enter your email address',
+                  controller: _emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email is required';
+                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                        .hasMatch(value)) {
+                      return 'Invalid email address';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 15),
+                // Password Field.
+                AuthField(
+                  title: 'Password',
+                  hintText: 'Enter your password',
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required';
+                    } else if (value.length < 8) {
+                      return 'Password should be at least 8 characters long';
+                    }
+                    return null;
+                  },
+                  isPassword: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
+                ),
+                const SizedBox(height: 30),
+                PrimaryButton(
+                  onTap: () async {
+                    if (_formKey.currentState!.validate()) {
+                      Response response = await UserService().register(
+                        _emailController.text,
+                        _passwordController.text,
+                        _usernameController.text,
+                        _nameController.text,
+                      );
+
+                      print(response.body);
+
+                      if (response.statusCode == 200) {
+                        SecureStorage().clear();
+                        SnackBarUtils.showTopSnackBar(
+                            context: context,
+                            message: "Register successfully",
+                            backgroundColor: Colors.green);
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return const AccountPage();
+                        }));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('An error occurred. Please try again'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  text: 'Create An Account',
+                ),
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),
@@ -220,97 +158,20 @@ class SignUpScreen extends StatelessWidget {
   }
 }
 
-class TermsAndPrivacyText extends StatelessWidget {
-  const TermsAndPrivacyText(
-      {super.key,
-      required this.title1,
-      required this.title2,
-      required this.title3,
-      this.color2,
-      required this.title4});
-  final Color? color2;
-  final String title1, title2, title3, title4;
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: AppColor.kWhite)
-            .copyWith(
-                color: AppColor.kGrayscale40,
-                fontWeight: FontWeight.w500,
-                fontSize: 14),
-        children: [
-          TextSpan(
-            text: title1,
-          ),
-          TextSpan(
-            text: title2,
-            style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.kWhite)
-                .copyWith(
-                    color: color2 ?? AppColor.kGrayscaleDark100,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-          ),
-          TextSpan(
-            text: title3,
-            style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.kWhite)
-                .copyWith(
-                    color: AppColor.kGrayscale40,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-          ),
-          TextSpan(
-            text: title4,
-            style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.kWhite)
-                .copyWith(
-                    color: AppColor.kGrayscaleDark100,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SecondaryButton extends StatefulWidget {
+class CustomSocialButton extends StatefulWidget {
+  final String icon;
   final VoidCallback onTap;
-  final String text, icons;
-  final double width;
-  final double height;
-  final double borderRadius;
-  final double? fontSize;
-  final Color textColor, bgColor;
-  const SecondaryButton(
-      {super.key,
-      required this.onTap,
-      required this.text,
-      required this.width,
-      required this.height,
-      required this.icons,
-      required this.borderRadius,
-      this.fontSize,
-      required this.textColor,
-      required this.bgColor});
+  const CustomSocialButton({
+    required this.icon,
+    required this.onTap,
+    super.key,
+  });
 
   @override
-  State<SecondaryButton> createState() => _SecondaryButtonState();
+  State<CustomSocialButton> createState() => _CustomSocialButtonState();
 }
 
-class _SecondaryButtonState extends State<SecondaryButton>
+class _CustomSocialButtonState extends State<CustomSocialButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final Duration _animationDuration = const Duration(milliseconds: 300);
@@ -350,30 +211,13 @@ class _SecondaryButtonState extends State<SecondaryButton>
           ),
         ),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 17),
-          height: widget.height,
-          alignment: Alignment.center,
-          width: widget.width,
+          height: 48,
+          width: 72,
+          padding: const EdgeInsets.all(1),
           decoration: BoxDecoration(
-            color: widget.bgColor,
-            border: Border.all(color: AppColor.kLine),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-          ),
-          child: Row(
-            children: [
-              Image.asset(widget.icons, width: 23.85, height: 23.04),
-              const SizedBox(width: 12),
-              Text(widget.text,
-                  style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColor.kWhite)
-                      .copyWith(
-                    color: widget.textColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  )),
-            ],
+            borderRadius: BorderRadius.circular(5),
+            color: const Color(0xFFF6F6F6),
+            image: DecorationImage(image: AssetImage(widget.icon)),
           ),
         ),
       ),
@@ -381,80 +225,282 @@ class _SecondaryButtonState extends State<SecondaryButton>
   }
 }
 
-class DividerRow extends StatelessWidget {
-  final String title;
-  const DividerRow({
-    required this.title,
-    super.key,
-  });
+class TextWithDivider extends StatelessWidget {
+  const TextWithDivider({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
         Expanded(
-            flex: 2,
-            child: Divider(
-              color: AppColor.kLine,
-            )),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          child: Text(
-            title,
-            style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.kWhite)
-                .copyWith(
-                    color: AppColor.kGrayscale40,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
+          child: Divider(
+            color: AppColors.kGrey60,
           ),
         ),
+        SizedBox(width: 20),
+        Text(
+          'Or Sign In with',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: AppColors.kGrey60,
+          ),
+        ),
+        SizedBox(width: 20),
         Expanded(
-            flex: 2,
-            child: Divider(
-              color: AppColor.kLine,
-            ))
+          child: Divider(color: AppColors.kGrey60),
+        ),
       ],
     );
   }
 }
 
-class CustomRichText extends StatelessWidget {
-  const CustomRichText({
+class PrimaryButton extends StatefulWidget {
+  final VoidCallback onTap;
+  final String text;
+  final double? width;
+  final double? height;
+  final double? borderRadius;
+  final double? fontSize;
+  final Color? color;
+  const PrimaryButton({
+    required this.onTap,
+    required this.text,
+    this.height,
+    this.width,
+    this.borderRadius,
+    this.fontSize,
+    this.color,
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.onTab,
-    required this.subtitleTextStyle,
   });
-  final String title, subtitle;
-  final TextStyle subtitleTextStyle;
-  final VoidCallback onTab;
+
+  @override
+  State<PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<PrimaryButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  final Duration _animationDuration = const Duration(milliseconds: 300);
+  final Tween<double> _tween = Tween<double>(begin: 1.0, end: 0.95);
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: _animationDuration,
+    )..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTab,
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          text: title,
-          style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.kWhite)
-              .copyWith(
-                  color: AppColor.kGrayscale40,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14),
-          children: <TextSpan>[
-            TextSpan(
-              text: subtitle,
-              style: subtitleTextStyle,
+      onTap: () {
+        _controller.forward().then((_) {
+          _controller.reverse();
+        });
+        widget.onTap();
+      },
+      child: ScaleTransition(
+        scale: _tween.animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeOut,
+            reverseCurve: Curves.easeIn,
+          ),
+        ),
+        child: Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: Container(
+            height: widget.height ?? 50,
+            alignment: Alignment.center,
+            width: widget.width ?? double.maxFinite,
+            decoration: BoxDecoration(
+              color: widget.color ?? const Color(0xFFD1A661),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 20),
             ),
-          ],
+            child: Text(
+              widget.text,
+              style: TextStyle(
+                  color: widget.color == null ? AppColors.kWhite : Colors.black,
+                  fontSize: widget.fontSize ?? 16,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+class CustomTextButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String text;
+  final Color? color;
+  final double? fontSize;
+  const CustomTextButton({
+    required this.onPressed,
+    required this.text,
+    this.fontSize,
+    this.color,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color ?? Colors.red,
+          fontSize: fontSize ?? 14,
+        ),
+      ),
+    );
+  }
+}
+
+class RememberMeCard extends StatefulWidget {
+  final Function(bool isChecked) onChanged;
+  const RememberMeCard({required this.onChanged, super.key});
+
+  @override
+  State<RememberMeCard> createState() => _RememberMeCardState();
+}
+
+class _RememberMeCardState extends State<RememberMeCard> {
+  bool _isChecked = false;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isChecked = !_isChecked;
+            });
+            widget.onChanged(_isChecked);
+          },
+          child: Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _isChecked
+                    ? const Color(0xFFD1A661)
+                    : const Color(0xFFE3E9ED),
+                width: 2,
+              ),
+            ),
+            child: _isChecked
+                ? const Icon(
+                    Icons.check,
+                    size: 16,
+                    color: Color(0xFFD1A661),
+                  )
+                : null,
+          ),
+        ),
+        const SizedBox(width: 8),
+        const Text(
+          'Remember me',
+          style: TextStyle(fontSize: 14, color: Color(0xFF78828A)),
+        ),
+      ],
+    );
+  }
+}
+
+class AuthField extends StatefulWidget {
+  final String title;
+  final String hintText;
+  final Color? titleColor;
+  final TextEditingController controller;
+  final TextInputAction? textInputAction;
+  final TextInputType? keyboardType;
+  final bool isPassword;
+  final String? Function(String?)? validator;
+  final int? maxLines;
+  const AuthField({
+    required this.title,
+    required this.hintText,
+    required this.controller,
+    this.validator,
+    this.titleColor,
+    this.maxLines,
+    this.textInputAction,
+    this.keyboardType,
+    this.isPassword = false,
+    super.key,
+  });
+
+  @override
+  State<AuthField> createState() => _AuthFieldState();
+}
+
+class _AuthFieldState extends State<AuthField> {
+  bool isObscure = true;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.title,
+          style: TextStyle(
+              fontSize: 14,
+              color: widget.titleColor ?? const Color(0xFF78828A)),
+        ),
+        const SizedBox(height: 5),
+        TextFormField(
+          controller: widget.controller,
+          validator: widget.validator,
+          maxLines: widget.isPassword ? 1 : widget.maxLines,
+          // ignore: avoid_bool_literals_in_conditional_expressions
+          obscureText: widget.isPassword ? isObscure : false,
+          textInputAction: widget.textInputAction,
+          keyboardType: widget.keyboardType,
+          decoration: InputDecoration(
+            fillColor: const Color(0xFFF6F6F6),
+            filled: true,
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(color: AppColors.kGrey60),
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isObscure = !isObscure;
+                      });
+                    },
+                    icon: Icon(
+                        isObscure ? Icons.visibility : Icons.visibility_off,
+                        color: const Color(0xFF171725)),
+                  )
+                : null,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AppColors {
+  static const Color kPrimary = Color(0xFFD1A661);
+  static const Color kWhite = Color(0xFFFEFEFE);
+  static const Color kGrey60 = Color(0xFF9CA4AB);
+  static const Color kGrey70 = Color(0xFF78828A);
+  static const Color kGrey100 = Color(0xFF171725);
 }
