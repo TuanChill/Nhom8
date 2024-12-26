@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:daily_e/src/presentation/auth/edit_profile.dart';
 import 'package:daily_e/src/presentation/auth/edit_pw.dart';
 import 'package:daily_e/src/presentation/auth/activity_page.dart';
+import 'package:daily_e/src/presentation/auth/forgotpassword_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final Future<void> Function() onLogoutSuccess;
@@ -96,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 // Điều hướng đến trang chỉnh sửa profile
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const EditPassword()),
+                  MaterialPageRoute(builder: (_) => const ForgotPasswordPage()),
                 );
               },
             ),
