@@ -1,4 +1,7 @@
 import 'package:daily_e/src/application/storage.dart';
+import 'package:daily_e/src/application/user_service.dart';
+import 'package:daily_e/src/presentation/auth/signup_page.dart';
+import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_e/src/presentation/auth/edit_profile.dart';
 import 'package:daily_e/src/presentation/auth/edit_pw.dart';
@@ -31,9 +34,17 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void handleDeleteAccount() {
+  void handleDeleteAccount() async {
     // Delete account logic
-    print("Account deletion initiated");
+    String user_id = (await SecureStorage().getUserId())!;
+    UserService().deleteUserById(user_id);
+    SnackBarUtils.showTopSnackBar(
+        context: context,
+        message: "Delete Account Successfully",
+        backgroundColor: Colors.green);
+
+    SecureStorage().clear();
+    widget.onLogoutSuccess();
   }
 
   @override

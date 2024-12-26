@@ -59,6 +59,16 @@ class _MyAppState extends State<MyApp> {
       }
     });
     scheduleDailyNotification();
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1, // ID phải là duy nhất
+        channelKey: 'basic_channel',
+        title: 'Lời nhắc hàng ngày',
+        body:
+            'Đã đến lúc học tiếng Anh! Hãy dành ít phút để nâng cao kỹ năng của bạn!',
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/presentation/auth/profile_page.dart';
 import 'package:daily_e/src/presentation/auth/signin_page.dart';
-import 'package:daily_e/src/presentation/auth/signup_page.dart';
 import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
