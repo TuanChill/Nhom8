@@ -41,23 +41,29 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     style: TextStyle(fontSize: 14, color: AppColors.kGrey60)),
                 const SizedBox(height: 30),
                 // Email Field.
-                AuthField(
-                  title: 'E-mail',
-                  hintText: 'Enter your email address',
+                TextFormField(
                   controller: _emailController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Email is required';
-                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                        .hasMatch(value)) {
+                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                       return 'Invalid email address';
                     }
                     return null;
                   },
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    labelText: 'E-mail',
+                    hintText: 'Enter your email address',
+                    suffixIcon: Icon(
+                      Icons.arrow_forward, // Mũi tên ở góc phải
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 15),
+
                 // Password Field.
                 AuthField(
                   title: 'Password',
@@ -94,7 +100,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {}
                   },
-                  text: 'Create An Account',
+                  text: 'Reset Password',
                 ),
                 const SizedBox(height: 30),
               ],
