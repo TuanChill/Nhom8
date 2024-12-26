@@ -77,7 +77,7 @@ class _LessonListPage extends State<LessonListPage> {
 
   void _onScroll() {
     if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent &&
+        scrollController.position.maxScrollExtent &&
         !_isFetchingMore) {
       currentPage++;
       fetchTopics(loadMore: true);
@@ -91,8 +91,8 @@ class _LessonListPage extends State<LessonListPage> {
       setState(() {
         filteredLessons = lessons
             .where((lesson) => lesson.name
-                .toLowerCase()
-                .contains(searchController.text.toLowerCase()))
+            .toLowerCase()
+            .contains(searchController.text.toLowerCase()))
             .toList();
         _isLoading = false;
       });
@@ -112,11 +112,15 @@ class _LessonListPage extends State<LessonListPage> {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black45
+                        : Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: const Offset(0, 3),
@@ -129,28 +133,41 @@ class _LessonListPage extends State<LessonListPage> {
               child: ListTile(
                 leading: _isListenAndReadMode
                     ? Checkbox(
-                        value: isSelected,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true) {
-                              selectedLessonIds.add(lesson.documentId);
-                            } else {
-                              selectedLessonIds.remove(lesson.documentId);
-                            }
-                          });
-                        },
-                      )
+                  value: isSelected,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        selectedLessonIds.add(lesson.documentId);
+                      } else {
+                        selectedLessonIds.remove(lesson.documentId);
+                      }
+                    });
+                  },
+                )
                     : null,
                 title: Text(
                   '${index + 1}. ${lesson.name}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
                 ),
                 subtitle: Text(
                   "${lesson.name} challenges",
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey[400]
+                        : Colors.grey,
+                  ),
                 ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                ),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -179,9 +196,11 @@ class _LessonListPage extends State<LessonListPage> {
     return Scaffold(
       appBar: AppBar(
         title:
-            const Text("Short Stories", style: TextStyle(color: Colors.white)),
+        const Text("Short Stories", style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.teal[700],
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.teal[900]
+            : Colors.teal[700],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -194,10 +213,20 @@ class _LessonListPage extends State<LessonListPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: TextField(
               controller: searchController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Search lessons...",
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
                 border: InputBorder.none,
+                hintStyle: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white70
+                      : Colors.black45,
+                ),
               ),
             ),
           ),
@@ -205,11 +234,13 @@ class _LessonListPage extends State<LessonListPage> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : filteredLessons.isEmpty
-                    ? const Center(child: Text("No lessons found"))
-                    : _buildLessonList(),
+                ? const Center(child: Text("No lessons found"))
+                : _buildLessonList(),
           ),
           Container(
-            color: Colors.teal[50], // Add background color
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey[850]
+                : Colors.teal[50],
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -218,8 +249,8 @@ class _LessonListPage extends State<LessonListPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isListenAndReadMode
-                          ? Colors.blue[200]
-                          : Colors.grey[300],
+                          ? Colors.blue
+                          : Colors.blue[300],
                       textStyle: const TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
@@ -232,8 +263,8 @@ class _LessonListPage extends State<LessonListPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: !_isListenAndReadMode
-                          ? Colors.blue[200]
-                          : Colors.grey[300],
+                          ? Colors.blue
+                          : Colors.blue[300],
                       textStyle: const TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
@@ -249,7 +280,9 @@ class _LessonListPage extends State<LessonListPage> {
           ),
           if (_isListenAndReadMode)
             Container(
-              color: Colors.teal[50], // Add background color
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[850]
+                  : Colors.teal[50],
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -257,7 +290,12 @@ class _LessonListPage extends State<LessonListPage> {
                   children: [
                     Text(
                       "Selected ${selectedLessonIds.length} lessons",
-                      style: const TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                     ElevatedButton.icon(
                       onPressed: () {

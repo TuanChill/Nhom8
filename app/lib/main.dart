@@ -4,6 +4,7 @@ import 'package:daily_e/src/presentation/setting_page.dart';
 import 'package:daily_e/src/provider/FontProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:daily_e/src/presentation/theme_provider.dart';
 
 void main() {
   AwesomeNotifications().initialize(null, [
@@ -15,9 +16,13 @@ void main() {
       ledColor: Colors.white,
     )
   ]);
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => FontProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FontProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()), // Đã thêm chính xác
+      ],
       child: const MyApp(),
     ),
   );
@@ -34,18 +39,18 @@ class _MyAppState extends State<MyApp> {
   void scheduleDailyNotification() {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 1, // ID phải là duy nhất
+        id: 1,
         channelKey: 'basic_channel',
         title: 'Lời nhắc hàng ngày',
         body: 'Học bài liền tay, tiến bước tương lai!',
         notificationLayout: NotificationLayout.Default,
       ),
       schedule: NotificationCalendar(
-        hour: 20, // 8h tối
+        hour: 20,
         minute: 0,
         second: 0,
         millisecond: 0,
-        repeats: true, // Lặp lại hàng ngày
+        repeats: true,
       ),
     );
   }
@@ -73,16 +78,27 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FontProvider>(
-      builder: (context, fontProvider, child) {
+    return Consumer2<FontProvider, ThemeProvider>(
+      builder: (context, fontProvider, themeProvider, child) {
         return MaterialApp(
           title: 'Daily E',
-          theme: ThemeData(
-            fontFamily: fontProvider.fontFamily,
+          theme: ThemeData.light().copyWith(
             textTheme: TextTheme(
-              bodyMedium: TextStyle(fontSize: fontProvider.fontSize),
+              bodyMedium: TextStyle(
+                fontSize: fontProvider.fontSize,
+                fontFamily: fontProvider.fontFamily,
+              ),
             ),
           ),
+          darkTheme: ThemeData.dark().copyWith(
+            textTheme: TextTheme(
+              bodyMedium: TextStyle(
+                fontSize: fontProvider.fontSize,
+                fontFamily: fontProvider.fontFamily,
+              ),
+            ),
+          ),
+          themeMode: themeProvider.themeMode, // Gán themeMode từ ThemeProvider
           home: const LayoutApp(),
         );
       },
