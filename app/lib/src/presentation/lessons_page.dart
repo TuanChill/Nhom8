@@ -249,8 +249,8 @@ class _LessonListPage extends State<LessonListPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isListenAndReadMode
-                          ? Colors.blue[200]
-                          : Colors.grey[300],
+                          ? Colors.blue
+                          : Colors.blue[300],
                       textStyle: const TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
@@ -263,8 +263,8 @@ class _LessonListPage extends State<LessonListPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: !_isListenAndReadMode
-                          ? Colors.blue[200]
-                          : Colors.grey[300],
+                          ? Colors.blue
+                          : Colors.blue[300],
                       textStyle: const TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
