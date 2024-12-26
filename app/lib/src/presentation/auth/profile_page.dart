@@ -27,19 +27,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void handleSignOut() async {
     try {
-      // remove token from storage
       SecureStorage().removeToken();
       await widget.onLogoutSuccess();
     } catch (e) {
-      // show error message
       print(e);
     }
   }
 
   void handleGetUserById() async {
-    // Get user by id logic
-    String user_id = (await SecureStorage().getUserId())!;
-    Response res = await UserService().getUserById(user_id);
+    String userId = (await SecureStorage().getUserId())!;
+    Response res = await UserService().getUserById(userId);
 
     final Map<String, dynamic> data = jsonDecode(res.body);
     setState(() {
@@ -50,9 +47,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void handleDeleteAccount() async {
-    // Delete account logic
-    String user_id = (await SecureStorage().getUserId())!;
-    UserService().deleteUserById(user_id);
+    String userId = (await SecureStorage().getUserId())!;
+    UserService().deleteUserById(userId);
     SnackBarUtils.showTopSnackBar(
         context: context,
         message: "Delete Account Successfully",
@@ -70,6 +66,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    Color textColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white
+        : Colors.black87;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
@@ -84,37 +84,41 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 16),
             Text(
               user["fullName"]!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
+                color: textColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               user["email"]!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                color: textColor.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 24),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Your Account',
                 style: TextStyle(
                   fontSize: 18,
+                  color: textColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             const SizedBox(height: 12),
             ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Edit Profile'),
-              trailing: const Icon(Icons.arrow_forward_ios),
+              leading: Icon(Icons.edit, color: textColor),
+              title: Text(
+                'Edit Profile',
+                style: TextStyle(color: textColor),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios, color: textColor),
               onTap: () {
-                // Điều hướng đến trang chỉnh sửa profile
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const EditProfilePage()),
@@ -122,11 +126,13 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.lock),
-              title: const Text('Update password'),
-              trailing: const Icon(Icons.arrow_forward_ios),
+              leading: Icon(Icons.lock, color: textColor),
+              title: Text(
+                'Update password',
+                style: TextStyle(color: textColor),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios, color: textColor),
               onTap: () {
-                // Điều hướng đến trang chỉnh sửa profile
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const ForgotPasswordPage()),
@@ -134,11 +140,13 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('Activity history'),
-              trailing: const Icon(Icons.arrow_forward_ios),
+              leading: Icon(Icons.history, color: textColor),
+              title: Text(
+                'Activity history',
+                style: TextStyle(color: textColor),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios, color: textColor),
               onTap: () {
-                // Điều hướng đến trang chỉnh sửa profile
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const ActivityHistory()),
@@ -197,11 +205,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               '*Long press the button to delete your account.',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: textColor.withOpacity(0.6),
               ),
             ),
           ],
