@@ -74,6 +74,16 @@
       "relation": "oneToMany",
       "target": "api::note.note",
       "mappedBy": "users_permissions_user"
+    },
+    "age": {
+      "type": "integer"
+    },
+    "gender": {
+      "type": "enumeration",
+      "enum": [
+        "male",
+        "female"
+      ]
     }
   }
 }
