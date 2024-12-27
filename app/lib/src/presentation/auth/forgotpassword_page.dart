@@ -1,5 +1,4 @@
 import 'package:daily_e/src/application/user_service.dart';
-import 'package:daily_e/src/presentation/account.dart';
 import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -20,9 +19,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.kWhite,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.grey[800]
+          : AppColors.kWhite,
       appBar: AppBar(
-          backgroundColor: AppColors.kWhite,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey[800]
+              : AppColors.kWhite,
           elevation: 0,
           leading: const BackButton(
             color: AppColors.kPrimary,
@@ -35,11 +38,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: Center(
             child: Column(
               children: [
-                const Text('Forgot Password',
+                Text('Forgot Password',
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black)),
+                        color: Theme.of(context).brightness != Brightness.dark
+                            ? Colors.grey[800]
+                            : AppColors.kWhite)),
                 const SizedBox(height: 5),
                 const Text('Please enter your details below',
                     style: TextStyle(fontSize: 14, color: AppColors.kGrey60)),
@@ -56,16 +61,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     }
                     return null;
                   },
-                  style: const TextStyle(color: AppColors.kGrey100),
+                  style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.grey[800]
+                          : AppColors.kWhite),
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: 'E-mail',
                     hintText: 'Enter your email address',
                     suffixIcon: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_forward,
-                        color: Colors.grey,
+                        color: Theme.of(context).brightness != Brightness.dark
+                            ? Colors.grey[800]
+                            : AppColors.kWhite,
                       ),
                       onPressed: () async {
                         Response res = await UserService()
@@ -457,7 +467,9 @@ class _AuthFieldState extends State<AuthField> {
           widget.title,
           style: TextStyle(
               fontSize: 14,
-              color: widget.titleColor ?? const Color(0xFF78828A)),
+              color: Theme.of(context).brightness != Brightness.dark
+                  ? Colors.grey[800]
+                  : AppColors.kWhite),
         ),
         const SizedBox(height: 5),
         TextFormField(

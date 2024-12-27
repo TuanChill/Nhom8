@@ -22,9 +22,13 @@ class _SignupScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.kWhite,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.grey[800]
+          : AppColors.kWhite,
       appBar: AppBar(
-          backgroundColor: AppColors.kWhite,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey[800]
+              : AppColors.kWhite,
           elevation: 0,
           leading: const BackButton(
             color: AppColors.kPrimary,
@@ -37,11 +41,13 @@ class _SignupScreenState extends State<SignUpScreen> {
           child: Center(
             child: Column(
               children: [
-                const Text('Create Account',
+                Text('Create Account',
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black)),
+                        color: Theme.of(context).brightness != Brightness.dark
+                            ? Colors.grey[800]
+                            : AppColors.kWhite)),
                 const SizedBox(height: 5),
                 const Text('Please enter your details below',
                     style: TextStyle(fontSize: 14, color: AppColors.kGrey60)),
@@ -462,12 +468,15 @@ class _AuthFieldState extends State<AuthField> {
           widget.title,
           style: TextStyle(
               fontSize: 14,
-              color: widget.titleColor ?? const Color(0xFF78828A)),
+              color: Theme.of(context).brightness != Brightness.dark
+                  ? Colors.grey[800]
+                  : AppColors.kWhite),
         ),
         const SizedBox(height: 5),
         TextFormField(
           controller: widget.controller,
           validator: widget.validator,
+          style: const TextStyle(color: AppColors.kGrey100),
           maxLines: widget.isPassword ? 1 : widget.maxLines,
           // ignore: avoid_bool_literals_in_conditional_expressions
           obscureText: widget.isPassword ? isObscure : false,

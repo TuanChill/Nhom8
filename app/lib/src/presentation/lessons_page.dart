@@ -77,7 +77,7 @@ class _LessonListPage extends State<LessonListPage> {
 
   void _onScroll() {
     if (scrollController.position.pixels >=
-        scrollController.position.maxScrollExtent &&
+            scrollController.position.maxScrollExtent &&
         !_isFetchingMore) {
       currentPage++;
       fetchTopics(loadMore: true);
@@ -91,8 +91,8 @@ class _LessonListPage extends State<LessonListPage> {
       setState(() {
         filteredLessons = lessons
             .where((lesson) => lesson.name
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase()))
+                .toLowerCase()
+                .contains(searchController.text.toLowerCase()))
             .toList();
         _isLoading = false;
       });
@@ -133,17 +133,17 @@ class _LessonListPage extends State<LessonListPage> {
               child: ListTile(
                 leading: _isListenAndReadMode
                     ? Checkbox(
-                  value: isSelected,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (value == true) {
-                        selectedLessonIds.add(lesson.documentId);
-                      } else {
-                        selectedLessonIds.remove(lesson.documentId);
-                      }
-                    });
-                  },
-                )
+                        value: isSelected,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value == true) {
+                              selectedLessonIds.add(lesson.documentId);
+                            } else {
+                              selectedLessonIds.remove(lesson.documentId);
+                            }
+                          });
+                        },
+                      )
                     : null,
                 title: Text(
                   '${index + 1}. ${lesson.name}',
@@ -196,7 +196,7 @@ class _LessonListPage extends State<LessonListPage> {
     return Scaffold(
       appBar: AppBar(
         title:
-        const Text("Short Stories", style: TextStyle(color: Colors.white)),
+            const Text("Short Stories", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Theme.of(context).brightness == Brightness.dark
             ? Colors.teal[900]
@@ -234,8 +234,8 @@ class _LessonListPage extends State<LessonListPage> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : filteredLessons.isEmpty
-                ? const Center(child: Text("No lessons found"))
-                : _buildLessonList(),
+                    ? const Center(child: Text("No lessons found"))
+                    : _buildLessonList(),
           ),
           Container(
             color: Theme.of(context).brightness == Brightness.dark
@@ -249,8 +249,8 @@ class _LessonListPage extends State<LessonListPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isListenAndReadMode
-                          ? Colors.blue
-                          : Colors.blue[300],
+                          ? Colors.blueGrey
+                          : Colors.grey[300],
                       textStyle: const TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
@@ -263,8 +263,8 @@ class _LessonListPage extends State<LessonListPage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: !_isListenAndReadMode
-                          ? Colors.blue
-                          : Colors.blue[300],
+                          ? Colors.blueGrey
+                          : Colors.grey[300],
                       textStyle: const TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
@@ -275,7 +275,6 @@ class _LessonListPage extends State<LessonListPage> {
                     child: const Text("Listen and Type"),
                   ),
                 ],
-
               ),
             ),
           ),

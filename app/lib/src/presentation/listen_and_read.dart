@@ -150,7 +150,7 @@ class _ListenAndReadState extends State<ListenAndRead> {
   }
 
   void _scrollToCurrentAudio() {
-    if (currentAudioIndex < sentences.length - 11) {
+    if (currentAudioIndex < sentences.length - 12) {
       _scrollController.animateTo(
         currentAudioIndex * 56.0, // Assuming each ListTile has a height of 56.0
         duration: const Duration(milliseconds: 300),
@@ -231,7 +231,15 @@ class _ListenAndReadState extends State<ListenAndRead> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: const Text("Playback Speed"),
+                          title: Text(
+                            "Playback Speed",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.black
+                                    : Colors.grey),
+                          ),
                           content: StatefulBuilder(
                             builder: (context, setStateDialog) {
                               return SizedBox(

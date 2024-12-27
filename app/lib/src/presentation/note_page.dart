@@ -1,4 +1,5 @@
 import 'package:daily_e/src/application/note_service.dart';
+import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/domain/note_model.dart';
 import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,19 @@ class _NotePageState extends State<NotePage> {
   bool _isLoading = true; // Biến trạng thái loading
 
   Future<void> fetchNotes() async {
+    String? token = await SecureStorage().getToken();
+    if (token == null) {
+      SnackBarUtils.showTopSnackBar(
+        context: context,
+        message: 'Please login to view notes',
+        backgroundColor: Colors.red,
+      );
+      setState(() {
+        _isLoading = false; // Bắt đầu trạng thái loading
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true; // Bắt đầu trạng thái loading
     });

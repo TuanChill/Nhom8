@@ -4,9 +4,11 @@ import 'package:daily_e/src/presentation/auth/forgotpassword_page.dart';
 import 'package:daily_e/src/presentation/auth/signup_page.dart' as signup;
 import 'package:daily_e/src/presentation/button.dart' as button;
 import 'package:daily_e/src/presentation/text_field.dart';
+import 'package:daily_e/src/presentation/theme_provider.dart';
 import 'package:daily_e/style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class SignInScreen extends StatelessWidget {
   final Future<void> Function() onLoginSuccess;
@@ -35,8 +37,13 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // Access ThemeProvider
+
     return Scaffold(
-      backgroundColor: AppColor.kWhite,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.grey[800]
+          : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -56,19 +63,23 @@ class SignInScreen extends StatelessWidget {
                   Text(
                     'Hi, Welcome Back! 👋',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ).copyWith(color: AppColor.kGrayscaleDark100, fontSize: 20),
+                    style: TextStyle(
+                      color: Theme.of(context).brightness != Brightness.dark
+                          ? Colors.grey[800]
+                          : Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'We’re happy to see you. Sign In to your account',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: TextStyle(
+                      color: Theme.of(context).brightness != Brightness.dark
+                          ? Colors.grey[800]
+                          : Colors.white,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.kGrayscale40,
                     ),
                   ),
                   const SizedBox(height: 36),
@@ -79,14 +90,13 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         Text(
                           'Identifier',
-                          style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColor.kWhite)
-                              .copyWith(
-                                  color: AppColor.kGrayscaleDark100,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14),
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey[800]
+                                    : Colors.white,
+                            fontSize: 14,
+                          ),
                         ),
                         const SizedBox(
                           height: 8,
@@ -102,14 +112,13 @@ class SignInScreen extends StatelessWidget {
                         ),
                         Text(
                           'Password',
-                          style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColor.kWhite)
-                              .copyWith(
-                                  color: AppColor.kGrayscaleDark100,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14),
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey[800]
+                                    : Colors.white,
+                            fontSize: 14,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         PasswordTextField(
@@ -135,10 +144,10 @@ class SignInScreen extends StatelessWidget {
                           );
                         },
                         title: 'Forgot Password?',
-                        textStyle: GoogleFonts.plusJakartaSans(
+                        textStyle: GoogleFonts.poppins(
+                          color: Colors.blue,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: AppColor.kPrimary,
                         ),
                       ),
                     ],
@@ -167,19 +176,18 @@ class SignInScreen extends StatelessWidget {
                           subtitle: ' Create here',
                           onTab: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const signup.SignUpScreen()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const signup.SignUpScreen(),
+                              ),
+                            );
                           },
-                          subtitleTextStyle: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColor.kWhite)
-                              .copyWith(
-                                  color: AppColor.kPrimary,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14),
+                          subtitleTextStyle: const TextStyle(
+                            color: Colors.blue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       )
                     ],
@@ -214,14 +222,11 @@ class CustomRichText extends StatelessWidget {
         textAlign: TextAlign.center,
         text: TextSpan(
           text: title,
-          style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.kWhite)
-              .copyWith(
-                  color: AppColor.kGrayscale40,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14),
+          style: subtitleTextStyle.copyWith(
+            color: Theme.of(context).brightness != Brightness.dark
+                ? Colors.grey[800]
+                : Colors.white,
+          ),
           children: <TextSpan>[
             TextSpan(
               text: subtitle,

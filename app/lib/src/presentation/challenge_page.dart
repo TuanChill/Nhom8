@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:daily_e/src/application/challenge_service.dart';
 import 'package:daily_e/src/application/note_service.dart';
+import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/domain/challenge_model.dart';
 import 'package:daily_e/src/presentation/setting_page.dart';
 import 'package:daily_e/src/presentation/note_page.dart';
@@ -10,9 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:daily_e/src/presentation/theme_provider.dart';
-
-
 
 class ChallengePage extends StatefulWidget {
   final String lessonId;
@@ -22,8 +20,10 @@ class ChallengePage extends StatefulWidget {
   @override
   State<ChallengePage> createState() => _ChallengePageState();
 }
+
 AudioPlayer _audioPlayer = AudioPlayer();
-const String correctAnswerSoundUrl = 'audio/correct_answer.mp3';  // Không cần "assets/" ở đầu
+const String correctAnswerSoundUrl =
+    'audio/correct_answer.mp3'; // Không cần "assets/" ở đầu
 const String incorrectAnswerSoundUrl = 'audio/wrong_answer.mp3';
 
 class _ChallengePageState extends State<ChallengePage>
@@ -34,6 +34,7 @@ class _ChallengePageState extends State<ChallengePage>
   final TextEditingController _inputController = TextEditingController();
   String hintMessage = "";
   String hintAnswer = "";
+  bool isLogin = false;
 
   final TextEditingController _inputNoteController = TextEditingController();
 
@@ -52,14 +53,15 @@ class _ChallengePageState extends State<ChallengePage>
     _loadChallenge();
     WidgetsBinding.instance.addObserver(this);
     _loadActiveTime();
+    checkLogin();
     _startTimer();
   }
-
 
   Future<void> _playSound(String assetPath) async {
     try {
       await _audioPlayer!.stop(); // Dừng âm thanh trước đó
-      await _audioPlayer!.play(AssetSource(assetPath)); // Phát âm thanh từ assets
+      await _audioPlayer!
+          .play(AssetSource(assetPath)); // Phát âm thanh từ assets
     } catch (e) {
       print('Lỗi phát âm thanh: $e');
     }
@@ -78,10 +80,20 @@ class _ChallengePageState extends State<ChallengePage>
     });
   }
 
+  void checkLogin() async {
+    String? token = await SecureStorage().getToken();
+    if (token != null) {
+      setState(() {
+        isLogin = true;
+      });
+    }
+  }
+
   Future<void> _loadChallenge() async {
     setState(() {
       isLoading = true;
     });
+
     try {
       ChallengeResponse response = await ChallengeService().getChallenge(
         widget.lessonId,
@@ -231,6 +243,9 @@ class _ChallengePageState extends State<ChallengePage>
       setState(() {
         currentPage++;
         isPlaying = false;
+        hintAnswer = "";
+        hintMessage = "";
+        _inputController.text = "";
       });
       _loadChallenge();
     }
@@ -241,11 +256,13 @@ class _ChallengePageState extends State<ChallengePage>
       setState(() {
         currentPage--;
         isPlaying = false;
+        hintAnswer = "";
+        hintMessage = "";
+        _inputController.text = "";
       });
       _loadChallenge();
     }
   }
-
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -254,7 +271,6 @@ class _ChallengePageState extends State<ChallengePage>
       _saveActiveTime(); // Lưu thời gian khi ứng dụng bị tạm dừng hoặc đóng
     }
   }
-
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -432,9 +448,9 @@ class _ChallengePageState extends State<ChallengePage>
                   context,
                   MaterialPageRoute(
                       builder: (context) => NotePage(
-                        challengeId: currentChallenge?.documentId ?? '',
-                        idChallenge: currentChallenge?.id ?? 0,
-                      )), // Navigate to NotePage
+                            challengeId: currentChallenge?.documentId ?? '',
+                            idChallenge: currentChallenge?.id ?? 0,
+                          )), // Navigate to NotePage
                 );
               } else if (value == 'Settings') {
                 Navigator.push(
@@ -479,195 +495,199 @@ class _ChallengePageState extends State<ChallengePage>
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-        padding:
-        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    isPlaying
-                        ? Icons.pause_circle_filled
-                        : Icons.play_circle_filled,
-                    color: Colors.teal,
-                    size: 40,
-                  ),
-                  onPressed: _togglePlayPause,
-                ),
-                DropdownButtonHideUnderline(
-                  child: DropdownButton<double>(
-                    value: selectedSpeed,
-                    items: [0.5, 1.0, 1.5, 2.0]
-                        .map((speed) => DropdownMenuItem(
-                      value: speed,
-                      child: Text('${speed}x',style: TextStyle(
-                        color: Colors.grey, // Đặt màu xanh dương
-                      ), ),
-                    ))
-                        .toList(),
-                    onChanged: (speed) {
-                      if (speed != null) {
-                        _changePlaybackSpeed(speed);
-                      }
-                    },
-                    style: const TextStyle(
-                      color: Colors.black,
-                    ),
-                    dropdownColor: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: _goToPreviousPage,
-                      icon: const Icon(Icons.arrow_back_ios, size: 20),
-                    ),
-                    Text(
-                      "$currentPage / $totalPages",
-                      style: TextStyle(
-                          fontSize: 16, color: Colors.grey[700]),
-                    ),
-                    IconButton(
-                      onPressed: _goToNextPage,
-                      icon: const Icon(Icons.arrow_forward_ios, size: 20),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _inputController,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    hintText: 'Type what you hear...',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                if (hintMessage.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      hintMessage,
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ),
-                if (hintAnswer.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Answer:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isPlaying
+                              ? Icons.pause_circle_filled
+                              : Icons.play_circle_filled,
+                          color: Colors.teal,
+                          size: 40,
+                        ),
+                        onPressed: _togglePlayPause,
+                      ),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton<double>(
+                          value: selectedSpeed,
+                          items: [0.5, 1.0, 1.5, 2.0]
+                              .map((speed) => DropdownMenuItem(
+                                    value: speed,
+                                    child: Text(
+                                      '${speed}x',
+                                      style: TextStyle(
+                                        color:
+                                            Colors.grey, // Đặt màu xanh dương
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          onChanged: (speed) {
+                            if (speed != null) {
+                              _changePlaybackSpeed(speed);
+                            }
+                          },
+                          style: const TextStyle(
                             color: Colors.black,
                           ),
+                          dropdownColor: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        const SizedBox(height: 5),
-                        Wrap(
-                          spacing: 8,
-                          children: hintAnswer.split(' ').map((word) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Text(
-                                word,
-                                style: const TextStyle(
-                                    fontSize: 16, color: Colors.black),
-                              ),
-                            );
-                          }).toList(),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: _goToPreviousPage,
+                            icon: const Icon(Icons.arrow_back_ios, size: 20),
+                          ),
+                          Text(
+                            "$currentPage / $totalPages",
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey[700]),
+                          ),
+                          IconButton(
+                            onPressed: _goToNextPage,
+                            icon: const Icon(Icons.arrow_forward_ios, size: 20),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: _inputController,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: 'Type what you hear...',
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                const SizedBox(height: 20),
-                if (hintAnswer.isNotEmpty)
-                  ElevatedButton.icon(
-                    onPressed: () => showNotesDrawer(context),
-                    icon: const Icon(
-                      Icons.edit,
-                      size: 24.0,
-                      color: Colors.black, // Màu biểu tượng
-                    ),
-                    label: const Text(
-                      'Add Notes',
-                      style: TextStyle(
-                        color: Colors.white, // Màu chữ
-                        fontSize: 14,
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      const Color(0xFF4D6A73), // Màu nền của nút
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(8.0), // Bo góc nút
+                      if (hintMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(
+                            hintMessage,
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ),
+                      if (hintAnswer.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Answer:',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Wrap(
+                                spacing: 8,
+                                children: hintAnswer.split(' ').map((word) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Text(
+                                      word,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: Colors.black),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(height: 20),
+                      if (hintAnswer.isNotEmpty && isLogin)
+                        ElevatedButton.icon(
+                          onPressed: () => showNotesDrawer(context),
+                          icon: const Icon(
+                            Icons.edit,
+                            size: 24.0,
+                            color: Colors.black, // Màu biểu tượng
+                          ),
+                          label: const Text(
+                            'Add Notes',
+                            style: TextStyle(
+                              color: Colors.white, // Màu chữ
+                              fontSize: 14,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFF4D6A73), // Màu nền của nút
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0, vertical: 8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8.0), // Bo góc nút
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _revealAnswer,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[400],
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 30),
+                        ),
+                        child: Text(hintAnswer.isEmpty ? 'Skip' : 'Redo',
+                            style: const TextStyle(color: Colors.white)),
                       ),
-                    ),
+                      ElevatedButton(
+                        onPressed: _togglePlayPause,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 30),
+                        ),
+                        child: Text(isPlaying ? 'Pause' : 'Play Again',
+                            style: const TextStyle(color: Colors.white)),
+                      ),
+                      ElevatedButton(
+                        onPressed: _checkAnswer,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 30),
+                        ),
+                        child: Text(hintAnswer.isNotEmpty ? 'Next' : 'Check',
+                            style: const TextStyle(color: Colors.white)),
+                      ),
+                    ],
                   ),
-              ],
+                ],
+              ),
             ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: _revealAnswer,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[400],
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 30),
-                  ),
-                  child: Text(hintAnswer.isEmpty ? 'Skip' : 'Redo',
-                      style: const TextStyle(color: Colors.white)),
-                ),
-                ElevatedButton(
-                  onPressed: _togglePlayPause,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 30),
-                  ),
-                  child: Text(isPlaying ? 'Pause' : 'Play Again',
-                      style: const TextStyle(color: Colors.white)),
-                ),
-                ElevatedButton(
-                  onPressed: _checkAnswer,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 30),
-                  ),
-                  child: Text(hintAnswer.isNotEmpty ? 'Next' : 'Check',
-                      style: const TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
