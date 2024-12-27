@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:daily_e/src/application/storage.dart';
+import 'package:daily_e/src/application/user_service.dart';
+import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -14,6 +19,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _ageController = TextEditingController();
 
   String _gender = 'Male'; // Default gender
+
+  @override
+  void initState() {
+    super.initState();
+    handleGetUserById();
+  }
+
+  void handleGetUserById() async {
+    String userId = (await SecureStorage().getUserId())!;
+    Response res = await UserService().getUserById(userId);
+
+    final Map<String, dynamic> data = jsonDecode(res.body);
+    setState(() {
+      _nameController.text = data["fullName"];
+      _emailController.text = data["email"];
+      _ageController.text = data["age"] != null ? data["age"].toString() : "";
+      _gender = data["gender"];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +96,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton.icon(
-                onPressed: () {
+                onPressed: () async {
                   // Logic to save the profile changes.
-                  print(
-                      "Profile updated: ${_nameController.text}, ${_emailController.text}, ${_ageController.text}, $_gender");
-                  Navigator.pop(context); // Navigate back to the profile page.
+                  Response res = await UserService().updateUser(
+                    _emailController.text,
+                    _ageController.text,
+                    _gender,
+                    _nameController.text,
+                  );
+
+                  if (res.statusCode == 200) {
+                    SnackBarUtils.showTopSnackBar(
+                        context: context,
+                        message: "Update user successfully",
+                        backgroundColor: Colors.green);
+                    Navigator.pop(context);
+                  } else {
+                    SnackBarUtils.showTopSnackBar(
+                        context: context,
+                        message: "Update user failed",
+                        backgroundColor: Colors.red);
+                  }
                 },
                 // icon: const Icon(Icons.save, size: 30), // Larger icon
                 label: const Padding(

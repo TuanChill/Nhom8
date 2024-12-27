@@ -56,20 +56,17 @@ class UserService {
 
   Future<Response> updateUser(String email, age, gender, fullName) async {
     String? token = await SecureStorage().getToken();
+    String? userId = await SecureStorage().getUserId();
 
-    Response response = await post(
-      Uri.parse(API_URL.register),
+    Response response = await put(
+      Uri.parse("${API_URL.users}/$userId"),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         "Authorization": "Bearer $token"
       },
-      body: {
-        'email': email,
-        'fullName': fullName,
-        'age': age,
-        "gender": gender
-      },
+      body: jsonEncode(
+          {'email': email, 'fullName': fullName, 'age': age, "gender": gender}),
     );
 
     return response;
