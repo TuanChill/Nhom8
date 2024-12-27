@@ -19,11 +19,11 @@ void main() {
       });
 
       final noteService = NoteService();
-<<<<<<< Updated upstream
+
       final String text = "Đây là một ghi chú thử nghiệm.";
-=======
-      final String text = "Đây là test note.";
->>>>>>> Stashed changes
+
+      // final String text = "Đây là test note.";
+
       final int challengeId = 1;
 
       // Act
