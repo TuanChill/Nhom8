@@ -84,6 +84,9 @@
         "male",
         "female"
       ]
+    },
+    "otp": {
+      "type": "string"
     }
   }
 }

@@ -971,6 +971,7 @@ export interface PluginUsersPermissionsUser
     > &
       Schema.Attribute.Private;
     notes: Schema.Attribute.Relation<'oneToMany', 'api::note.note'>;
+    otp: Schema.Attribute.String;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
