@@ -1,4 +1,8 @@
+import 'package:daily_e/src/application/user_service.dart';
+import 'package:daily_e/src/presentation/account.dart';
+import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -46,40 +50,40 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Email is required';
-                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                        .hasMatch(value)) {
                       return 'Invalid email address';
                     }
                     return null;
                   },
+                  style: const TextStyle(color: AppColors.kGrey100),
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: 'E-mail',
                     hintText: 'Enter your email address',
-                    suffixIcon: Icon(
-                      Icons.arrow_forward, // Mũi tên ở góc phải
-                      color: Colors.grey,
+                    suffixIcon: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_forward,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () async {
+                        Response res = await UserService()
+                            .sendOtp(_emailController.text.trim());
+                        if (res.statusCode == 200) {
+                          SnackBarUtils.showTopSnackBar(
+                              context: context,
+                              message: "OTP sent to your email",
+                              backgroundColor: Colors.green);
+                        } else {
+                          SnackBarUtils.showTopSnackBar(
+                              context: context,
+                              message: "Failed to send OTP",
+                              backgroundColor: Colors.red);
+                        }
+                      },
                     ),
                   ),
-                ),
-                const SizedBox(height: 15),
-
-                // Password Field.
-                AuthField(
-                  title: 'Password',
-                  hintText: 'Enter your password',
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    } else if (value.length < 8) {
-                      return 'Password should be at least 8 characters long';
-                    }
-                    return null;
-                  },
-                  isPassword: true,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 15),
                 AuthField(
@@ -95,10 +99,47 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                 ),
+                const SizedBox(height: 15),
+                // Password Field.
+                AuthField(
+                  title: 'Password',
+                  hintText: 'Enter your password',
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required';
+                    } else if (value.length < 6) {
+                      return 'Password should be at least 6 characters long';
+                    }
+                    return null;
+                  },
+                  isPassword: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
+                ),
+
                 const SizedBox(height: 30),
                 PrimaryButton(
                   onTap: () async {
-                    if (_formKey.currentState!.validate()) {}
+                    if (_formKey.currentState!.validate()) {
+                      Response res = await UserService().resetPassword(
+                          _emailController.text.trim(),
+                          _passwordController.text.trim(),
+                          _nameController.text.trim());
+                      if (res.statusCode == 200) {
+                        SnackBarUtils.showTopSnackBar(
+                            context: context,
+                            message: "Password reset successfully",
+                            backgroundColor: Colors.green);
+
+                        Navigator.pop(context);
+                      } else {
+                        SnackBarUtils.showTopSnackBar(
+                            context: context,
+                            message: "Failed to reset password",
+                            backgroundColor: Colors.red);
+                      }
+                    }
                   },
                   text: 'Reset Password',
                 ),
@@ -427,6 +468,7 @@ class _AuthFieldState extends State<AuthField> {
           obscureText: widget.isPassword ? isObscure : false,
           textInputAction: widget.textInputAction,
           keyboardType: widget.keyboardType,
+          style: const TextStyle(color: AppColors.kGrey100),
           decoration: InputDecoration(
             fillColor: const Color(0xFFF6F6F6),
             filled: true,

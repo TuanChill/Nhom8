@@ -71,4 +71,22 @@ class UserService {
 
     return response;
   }
+
+  Future<Response> sendOtp(String email) async {
+    Response response = await post(
+      Uri.parse(API_URL.sendOtp),
+      body: {'email': email},
+    );
+
+    return response;
+  }
+
+  Future<Response> resetPassword(String email, otp, password) async {
+    Response response = await post(
+      Uri.parse(API_URL.sendOtp),
+      body: {'email': email, "otp": otp, "password": password},
+    );
+
+    return response;
+  }
 }

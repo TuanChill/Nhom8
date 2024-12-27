@@ -23,7 +23,7 @@ class SignInScreen extends StatelessWidget {
         final response = await UserService().login(emailC.text, passwordC.text);
         // save token to storage
         SecureStorage().saveToken(response.jwt);
-        SecureStorage().saveUserId((response.user.id) as int);
+        SecureStorage().saveUserId((response.user.id));
 
         // call onLoginSuccess
         onLoginSuccess();
@@ -135,7 +135,11 @@ class SignInScreen extends StatelessWidget {
                           );
                         },
                         title: 'Forgot Password?',
-                        textStyle: const TextStyle(),
+                        textStyle: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColor.kPrimary,
+                        ),
                       ),
                     ],
                   ),

@@ -82,7 +82,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   _gender = value!;
                 });
               },
-              items: ['Male', 'Female', 'Other']
+              items: ['Male', 'Female']
                   .map((gender) => DropdownMenuItem<String>(
                         value: gender,
                         child: Text(gender),

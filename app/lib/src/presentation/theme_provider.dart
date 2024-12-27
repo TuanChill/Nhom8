@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:daily_e/src/presentation/setting_page.dart';
+
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
 
