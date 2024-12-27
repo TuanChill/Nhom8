@@ -83,7 +83,8 @@
       "enum": [
         "male",
         "female"
-      ]
+      ],
+      "default": "male"
     },
     "otp": {
       "type": "string"

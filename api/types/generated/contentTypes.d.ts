@@ -963,7 +963,8 @@ export interface PluginUsersPermissionsUser
         minLength: 6;
       }>;
     fullName: Schema.Attribute.String;
-    gender: Schema.Attribute.Enumeration<['male', 'female']>;
+    gender: Schema.Attribute.Enumeration<['male', 'female']> &
+      Schema.Attribute.DefaultTo<'male'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
