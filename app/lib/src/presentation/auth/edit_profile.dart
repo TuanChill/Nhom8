@@ -1,7 +1,6 @@
 import 'package:daily_e/src/application/storage.dart';
 import 'package:flutter/material.dart';
 
-
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
 
@@ -61,35 +60,45 @@ class _EditProfilePageState extends State<EditProfilePage> {
               },
               items: ['Male', 'Female', 'Other']
                   .map((gender) => DropdownMenuItem<String>(
-                value: gender,
-                child: Text(gender),
-              ))
+                        value: gender,
+                        child: Text(gender),
+                      ))
                   .toList(),
               decoration: const InputDecoration(
                 labelText: 'Gender',
               ),
             ),
             const SizedBox(height: 20),
-        ElevatedButton.icon(
-          onPressed: () {
-            // Logic to save the profile changes.
-            print("Profile updated: ${_nameController.text}, ${_emailController.text}, ${_ageController.text}, $_gender");
-            Navigator.pop(context); // Navigate back to the profile page.
-          },
-          // icon: const Icon(Icons.save, size: 30), // Larger icon
-          label: const Text(
-            'Save Changes',
-            style: TextStyle(fontSize: 18, color: Colors.white), // Change the text color here
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal[700],
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Logic to save the profile changes.
+                  print(
+                      "Profile updated: ${_nameController.text}, ${_emailController.text}, ${_ageController.text}, $_gender");
+                  Navigator.pop(context); // Navigate back to the profile page.
+                },
+                // icon: const Icon(Icons.save, size: 30), // Larger icon
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    'Save Changes',
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white), // Change the text color here
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal[700],
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  foregroundColor:
+                      Colors.white, // Optional: ensures text color is white
+                ),
+              ),
             ),
-            foregroundColor: Colors.white, // Optional: ensures text color is white
-          ),
-        ),
           ],
         ),
       ),

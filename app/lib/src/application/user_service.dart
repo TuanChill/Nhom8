@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:daily_e/constant.dart';
+import 'package:daily_e/src/application/storage.dart';
 import 'package:daily_e/src/domain/user_model.dart';
 import 'package:http/http.dart';
 
@@ -49,6 +50,27 @@ class UserService {
     );
 
     print(response.body);
+
+    return response;
+  }
+
+  Future<Response> updateUser(String email, age, gender, fullName) async {
+    String? token = await SecureStorage().getToken();
+
+    Response response = await post(
+      Uri.parse(API_URL.register),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Authorization": "Bearer $token"
+      },
+      body: {
+        'email': email,
+        'fullName': fullName,
+        'age': age,
+        "gender": gender
+      },
+    );
 
     return response;
   }
