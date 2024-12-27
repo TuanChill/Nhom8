@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:daily_e/src/presentation/theme_provider.dart';
 
 
+
 class ChallengePage extends StatefulWidget {
   final String lessonId;
 
@@ -21,6 +22,9 @@ class ChallengePage extends StatefulWidget {
   @override
   State<ChallengePage> createState() => _ChallengePageState();
 }
+AudioPlayer _audioPlayer = AudioPlayer();
+const String correctAnswerSoundUrl = 'audio/correct_answer.mp3';  // Không cần "assets/" ở đầu
+const String incorrectAnswerSoundUrl = 'audio/wrong_answer.mp3';
 
 class _ChallengePageState extends State<ChallengePage>
     with WidgetsBindingObserver {
@@ -49,6 +53,16 @@ class _ChallengePageState extends State<ChallengePage>
     WidgetsBinding.instance.addObserver(this);
     _loadActiveTime();
     _startTimer();
+  }
+
+
+  Future<void> _playSound(String assetPath) async {
+    try {
+      await _audioPlayer!.stop(); // Dừng âm thanh trước đó
+      await _audioPlayer!.play(AssetSource(assetPath)); // Phát âm thanh từ assets
+    } catch (e) {
+      print('Lỗi phát âm thanh: $e');
+    }
   }
 
   Future<void> _setupAudioPlayer() async {
@@ -104,6 +118,9 @@ class _ChallengePageState extends State<ChallengePage>
       }
 
       if (userInput == correctAnswer) {
+        // Phát âm thanh khi trả lời đúng
+        _playSound(correctAnswerSoundUrl);
+
         SnackBarUtils.showTopSnackBar(
           context: context,
           message: 'Correct answer! 🎉',
@@ -116,12 +133,16 @@ class _ChallengePageState extends State<ChallengePage>
           _inputController.text = currentChallenge?.answer ?? "";
         });
       } else {
+        // Phát âm thanh khi trả lời sai
+        _playSound(incorrectAnswerSoundUrl);
+
         String hint = _generateHint(userInput, correctAnswer);
         SnackBarUtils.showTopSnackBar(
           context: context,
           message: 'Incorrect answer. Try again! ❌',
           backgroundColor: Colors.teal,
         );
+
         setState(() {
           hintMessage = "Hint: $hint";
         });
@@ -225,6 +246,7 @@ class _ChallengePageState extends State<ChallengePage>
     }
   }
 
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive ||
@@ -232,6 +254,7 @@ class _ChallengePageState extends State<ChallengePage>
       _saveActiveTime(); // Lưu thời gian khi ứng dụng bị tạm dừng hoặc đóng
     }
   }
+
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
