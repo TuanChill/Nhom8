@@ -71,11 +71,11 @@ void main() {
       expect(username, equals('testuser'));
     });
 
-<<<<<<< Updated upstream
+
     test('ném Exception khi đăng nhập thất bại', () async {
-=======
-    test('Ném Exception khi đăng nhập thất bại', () async {
->>>>>>> Stashed changes
+// =======
+//     test('Ném Exception khi đăng nhập thất bại', () async {
+
       // Arrange
       final mockHTTPClient = MockClient((request) async {
         return Response('Thông tin xác thực không hợp lệ', 401);
