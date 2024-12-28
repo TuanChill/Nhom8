@@ -351,7 +351,6 @@ class _ChallengePageState extends State<ChallengePage>
                   "Leave a note",
                   style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).brightness != Brightness.dark
                         ? Colors.grey[800]
@@ -372,9 +371,7 @@ class _ChallengePageState extends State<ChallengePage>
                   decoration: InputDecoration(
                     hintText: "Leave note here...",
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0)
-
-                    ),
+                        borderRadius: BorderRadius.circular(8.0)),
                   ),
                   maxLines: 4,
                 ),
