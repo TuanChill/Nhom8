@@ -351,6 +351,7 @@ class _ChallengePageState extends State<ChallengePage>
                   "Leave a note",
                   style: TextStyle(
                     fontSize: 18,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).brightness != Brightness.dark
                         ? Colors.grey[800]
@@ -371,7 +372,8 @@ class _ChallengePageState extends State<ChallengePage>
                   decoration: InputDecoration(
                     hintText: "Leave note here...",
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(8.0)
+
                     ),
                   ),
                   maxLines: 4,
@@ -466,10 +468,10 @@ class _ChallengePageState extends State<ChallengePage>
               } else if (value == 'Reset lesson') {
                 // Reset lesson to the first page
                 setState(() {
-                  currentPage = 1; // Set currentPage to 1 (first page)
-                  isPlaying = false; // Optional: Reset play status
+                  currentPage = 1;
+                  isPlaying = false;
                 });
-                _loadChallenge(); // Reload the challenge for the first page
+                _loadChallenge();
                 // _showTopSnackBar('Lesson reset to the first page! 🔄', Colors.blue);
               }
             },
