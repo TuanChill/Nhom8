@@ -1,5 +1,6 @@
 import 'package:daily_e/src/application/note_service.dart';
 import 'package:daily_e/src/domain/note_model.dart';
+import 'package:daily_e/src/utils/snackBarUtils.dart';
 import 'package:flutter/material.dart';
 
 class EditNotePage extends StatefulWidget {
@@ -57,7 +58,9 @@ class _EditNotePageState extends State<EditNotePage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[800]
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey),
                 ),
@@ -129,10 +132,14 @@ class _TextEditPageState extends State<TextEditPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await updateNote(_noteController.text);
+                SnackBarUtils.showTopSnackBar(
+                    context: context,
+                    message: "Your note is changed",
+                    backgroundColor: Colors.green);
                 Navigator.pop(context);
                 Navigator.pop(context);
-                updateNote(_noteController.text);
               },
               child: const Text('Save'),
             ),

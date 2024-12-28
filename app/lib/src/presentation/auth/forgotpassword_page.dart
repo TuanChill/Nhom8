@@ -62,7 +62,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     return null;
                   },
                   style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark
+                      color: Theme.of(context).brightness != Brightness.dark
                           ? Colors.grey[800]
                           : AppColors.kWhite),
                   keyboardType: TextInputType.emailAddress,

@@ -347,11 +347,14 @@ class _ChallengePageState extends State<ChallengePage>
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   "Leave a note",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness != Brightness.dark
+                        ? Colors.grey[800]
+                        : Colors.white,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -381,6 +384,7 @@ class _ChallengePageState extends State<ChallengePage>
                       onPressed: () {
                         saveNote();
                         // Navigator.pop(context); // Đóng drawer
+                        _inputNoteController.clear();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
@@ -590,12 +594,15 @@ class _ChallengePageState extends State<ChallengePage>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Answer:',
+                              Text(
+                                "Answer:",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                                  color: Theme.of(context).brightness !=
+                                          Brightness.dark
+                                      ? Colors.grey[800]
+                                      : Colors.white,
                                 ),
                               ),
                               const SizedBox(height: 5),
