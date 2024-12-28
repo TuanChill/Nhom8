@@ -35,7 +35,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _nameController.text = data["fullName"];
       _emailController.text = data["email"];
       _ageController.text = data["age"] != null ? data["age"].toString() : "";
-      _gender = data["gender"];
+      _gender = data["gender"].substring(0, 1).toUpperCase() +
+          data["gender"].substring(1);
     });
   }
 
@@ -52,6 +53,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           children: [
             TextField(
               controller: _nameController,
+              style: TextStyle(
+                color: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.white,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Full Name',
                 hintText: 'Enter your full name',
@@ -60,6 +66,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(height: 20),
             TextField(
               controller: _emailController,
+              style: TextStyle(
+                color: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.white,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email address',
@@ -68,6 +79,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(height: 20),
             TextField(
               controller: _ageController,
+              style: TextStyle(
+                color: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.white,
+              ),
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: 'Age',
@@ -77,12 +93,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(height: 20),
             DropdownButtonFormField<String>(
               value: _gender,
+              style: TextStyle(
+                color: Theme.of(context).brightness != Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.white,
+              ),
               onChanged: (value) {
                 setState(() {
                   _gender = value!;
                 });
               },
-              items: ['Male', 'Female', "Other"]
+              items: ['Male', 'Female']
                   .map((gender) => DropdownMenuItem<String>(
                         value: gender,
                         child: Text(gender),
