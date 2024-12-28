@@ -122,7 +122,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   Response res = await UserService().updateUser(
                     _emailController.text,
                     _ageController.text,
-                    _gender,
+                    _gender.toLowerCase(),
                     _nameController.text,
                   );
 
